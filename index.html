@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="hu" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MVM Smart Future Lab - Senior Innovációs Projekt Szakértő</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #ffffff;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#f0b323',
+                        secondary: '#ffffff',
+                    },
+                    fontFamily: {
+                        'nunito': ['Nunito', 'sans-serif'],
+                    }
+                },
+            },
+            daisyui: {
+                themes: [
+                    {
+                        light: {
+                            "primary": "#f0b323",
+                            "secondary": "#ffffff",
+                        },
+                    },
+                ],
+            },
+        }
+    </script>
+</head>
+<body class="font-nunito">
+    <div id="job-modal" class="modal modal-open">
+        <div class="modal-box bg-secondary">
+            <h3 class="font-bold text-lg mb-4 text-primary">Válasszon munkakört</h3>
+            <div class="form-control w-full">
+                <input type="text" id="job-autocomplete" placeholder="Kezdje el gépelni a munkakört..." class="input input-bordered w-full bg-white text-gray-800" />
+                <ul id="job-suggestions" class="menu bg-white w-full mt-2 hidden"></ul>
+            </div>
+            <div class="modal-action">
+                <button id="select-job" class="btn bg-primary text-white hover:bg-primary-dark">Kiválasztás</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-content" class="hidden">
+        <nav class="navbar bg-secondary fixed top-0 z-50 shadow-md">
+            <div class="flex-1">
+                <img src="https://via.placeholder.com/150x50?text=MVM+Logo" alt="Company Logo" class="h-8">
+            </div>
+            <div class="flex-none">
+                <div class="dropdown dropdown-end">
+                    <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+                        <div class="w-10 rounded-full">
+                            <img src="https://placekitten.com/100/100" alt="User Avatar" />
+                        </div>
+                    </label>
+                    <ul tabindex="0" class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-secondary rounded-box w-52">
+                        <li><a id="selected-job" class="text-gray-800">Senior Innovációs Projekt Szakértő</a></li>
+                        <li><a id="change-job" class="text-gray-800">Munkakör váltása</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mx-auto px-4 pt-20">
+            <div id="scroll-indicator" class="fixed left-4 top-1/2 transform -translate-y-1/2 space-y-2">
+                <div class="w-2 h-2 rounded-full bg-gray-300" data-section="job-details"></div>
+                <div class="w-2 h-2 rounded-full bg-gray-300" data-section="image-gallery"></div>
+                <div class="w-2 h-2 rounded-full bg-gray-300" data-section="text-posts"></div>
+            </div>
+
+            <section id="job-details" class="mb-16 opacity-0">
+                <h2 class="text-2xl font-bold mb-4 text-primary">Munkakör részletei</h2>
+                <!-- Job details will be populated here -->
+            </section>
+
+            <section id="image-gallery" class="mb-16 opacity-0">
+                <h2 class="text-2xl font-bold mb-4 text-primary">Képgaléria</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Image gallery will be populated here -->
+                </div>
+            </section>
+
+            <section id="text-posts" class="mb-16 opacity-0">
+                <h2 class="text-2xl font-bold mb-4 text-primary">Bejegyzések</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Text posts will be populated here -->
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div id="error-modal" class="modal">
+        <div class="modal-box bg-secondary">
+            <h3 class="font-bold text-lg text-red-600">Hiba történt</h3>
+            <p id="error-message" class="py-4 text-gray-800"></p>
+            <div class="modal-action">
+                <button class="btn bg-primary text-white hover:bg-primary-dark" onclick="document.getElementById('error-modal').classList.remove('modal-open')">Bezárás</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
