@@ -34,29 +34,50 @@ function populateJobList() {
     const jobAutocomplete = document.getElementById('job-autocomplete');
     const jobSuggestions = document.getElementById('job-suggestions');
 
-    jobAutocomplete.addEventListener('input', function() {
-        const value = this.value.toLowerCase();
-        console.log('Autocomplete input:', value);
-        const filteredJobs = jobList.filter(job => job.Cégnév.toLowerCase().includes(value));
-        console.log('Filtered jobs:', filteredJobs);
-        
+    // Segédfüggvény a javaslatok megjelenítéséhez
+    function renderSuggestions(filteredJobs) {
         jobSuggestions.innerHTML = '';
         filteredJobs.forEach(job => {
             const li = document.createElement('li');
-            li.textContent = `${job.Cégnév} - ${job.URL.split('/').pop()}`;
-            li.addEventListener('click', () => selectJob(job));
+            li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
+            li.textContent = `${job.Cégnév} - ${getJobTitle(job)}`;
+            li.addEventListener('click', () => {
+                jobAutocomplete.value = li.textContent;
+                jobSuggestions.classList.add('hidden');
+            });
             jobSuggestions.appendChild(li);
         });
-
         jobSuggestions.classList.toggle('hidden', filteredJobs.length === 0);
+    }
+
+    // Segédfüggvény a munkakör címének kinyeréséhez az URL-ből
+    function getJobTitle(job) {
+        const urlParts = job.URL.split('/');
+        const lastPart = urlParts[urlParts.length - 1];
+        const titlePart = lastPart.replace(/-\d+$/, '');
+        return titlePart.replace(/-/g, ' ');
+    }
+
+    // Kezdetben az összes munkakör megjelenítése
+    renderSuggestions(jobList);
+
+    jobAutocomplete.addEventListener('input', function() {
+        const value = this.value.trim().toLowerCase();
+        console.log('Autocomplete input:', value);
+        const filteredJobs = jobList.filter(job => 
+            job.Cégnév.toLowerCase().includes(value) || getJobTitle(job).toLowerCase().includes(value)
+        );
+        console.log('Filtered jobs:', filteredJobs);
+        renderSuggestions(filteredJobs);
     });
 
     document.getElementById('select-job').addEventListener('click', () => {
         const selectedJobText = jobAutocomplete.value.toLowerCase();
         console.log('Selected job text:', selectedJobText);
-        const selectedJob = jobList.find(job => 
-            `${job.Cégnév} - ${job.URL.split('/').pop()}`.toLowerCase() === selectedJobText
-        );
+        const selectedJob = jobList.find(job => {
+            const jobText = `${job.Cégnév} - ${getJobTitle(job)}`.toLowerCase();
+            return jobText === selectedJobText;
+        });
         if (selectedJob) {
             console.log('Job selected:', selectedJob);
             selectJob(selectedJob);
@@ -72,7 +93,7 @@ function selectJob(job) {
     selectedJob = job;
     document.getElementById('job-modal').classList.remove('modal-open');
     document.getElementById('main-content').classList.remove('hidden');
-    document.getElementById('selected-job').textContent = `${job.Cégnév} - ${job.URL.split('/').pop()}`;
+    document.getElementById('selected-job').textContent = `${job.Cégnév} - ${getJobTitle(job)}`;
     populateJobDetails();
     populateImageGallery();
     populateTextPosts();
@@ -137,13 +158,25 @@ function populateJobDetails() {
 function parseAndRenderList(data) {
     console.log('Parsing and rendering list:', data);
     try {
-        const list = JSON.parse(data || '[]');
+        let list = [];
+        if (Array.isArray(data)) {
+            list = data;
+        } else {
+            list = JSON.parse(data || '[]');
+        }
         console.log('Parsed list:', list);
         return list.map(item => `<li>${item}</li>`).join('');
     } catch (error) {
         console.error('Error parsing list data:', error);
         return '<li>Hiba történt az adatok feldolgozásakor</li>';
     }
+}
+
+function getJobTitle(job) {
+    const urlParts = job.URL.split('/');
+    const lastPart = urlParts[urlParts.length - 1];
+    const titlePart = lastPart.replace(/-\d+$/, '');
+    return titlePart.replace(/-/g, ' ');
 }
 
 function populateImageGallery() {
@@ -157,7 +190,9 @@ function populateImageGallery() {
             const imgContainer = document.createElement('div');
             imgContainer.className = 'relative group';
             imgContainer.innerHTML = `
-                <img src="${url}" alt="Job related image" class="w-full h-64 object-cover rounded-lg shadow-md" onerror="this.style.display='none'">
+                <div class="w-full aspect-square overflow-hidden rounded-lg shadow-md">
+                    <img src="${url}" alt="Job related image" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                </div>
                 <button class="btn bg-primary text-white hover:bg-primary-dark btn-sm absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Letöltés</button>
             `;
             imageGallerySection.appendChild(imgContainer);
@@ -167,7 +202,7 @@ function populateImageGallery() {
         console.error('Error populating image gallery:', error);
         showErrorModal('Hiba történt a képgaléria megjelenítésekor.');
     }
-}
+} 
 
 function populateTextPosts() {
     console.log('Populating text posts');
@@ -258,4 +293,4 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM content loaded');
     fetchJobData();
     setupEventListeners();
-});
+}); 
