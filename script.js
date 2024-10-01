@@ -34,7 +34,6 @@ function populateJobList() {
     const jobAutocomplete = document.getElementById('job-autocomplete');
     const jobSuggestions = document.getElementById('job-suggestions');
 
-    // Segédfüggvény a javaslatok megjelenítéséhez
     function renderSuggestions(filteredJobs) {
         jobSuggestions.innerHTML = '';
         filteredJobs.forEach(job => {
@@ -50,7 +49,6 @@ function populateJobList() {
         jobSuggestions.classList.toggle('hidden', filteredJobs.length === 0);
     }
 
-    // Segédfüggvény a munkakör címének kinyeréséhez az URL-ből
     function getJobTitle(job) {
         const urlParts = job.URL.split('/');
         const lastPart = urlParts[urlParts.length - 1];
@@ -58,7 +56,6 @@ function populateJobList() {
         return titlePart.replace(/-/g, ' ');
     }
 
-    // Kezdetben az összes munkakör megjelenítése
     renderSuggestions(jobList);
 
     jobAutocomplete.addEventListener('input', function() {
@@ -202,9 +199,10 @@ function animateJobDetails() {
         targets: '#job-details .card',
         opacity: [0, 1],
         translateY: [20, 0],
+        scale: [0.9, 1],
         delay: anime.stagger(100),
-        easing: 'easeOutQuad',
-        duration: 500
+        easing: 'easeOutElastic(1, .8)',
+        duration: 800
     });
 }
 
@@ -241,7 +239,7 @@ function populateImageGallery() {
         console.log('Image URLs:', imageURLs);
         imageURLs.forEach(url => {
             const imgContainer = document.createElement('div');
-            imgContainer.className = 'relative group';
+            imgContainer.className = 'relative group image-container';
             imgContainer.innerHTML = `
                 <div class="w-full aspect-square overflow-hidden rounded-lg shadow-md">
                     <img src="${url}" alt="Job related image" class="w-full h-full object-cover" onerror="this.style.display='none'">
@@ -251,11 +249,24 @@ function populateImageGallery() {
             imageGallerySection.appendChild(imgContainer);
         });
         console.log('Image gallery populated');
+        animateImageGallery();
     } catch (error) {
         console.error('Error populating image gallery:', error);
         showErrorModal('Hiba történt a képgaléria megjelenítésekor.');
     }
 } 
+
+function animateImageGallery() {
+    anime({
+        targets: '#image-gallery .image-container',
+        opacity: [0, 1],
+        translateY: [50, 0],
+        scale: [0.8, 1],
+        delay: anime.stagger(100),
+        easing: 'easeOutQuad',
+        duration: 800
+    });
+}
 
 function populateTextPosts() {
     console.log('Populating text posts');
@@ -280,10 +291,23 @@ function populateTextPosts() {
 
         setupCopyButtons();
         console.log('Text posts populated');
+        animateTextPosts();
     } catch (error) {
         console.error('Error populating text posts:', error);
         showErrorModal('Hiba történt a szöveges bejegyzések megjelenítésekor.');
     }
+}
+
+function animateTextPosts() {
+    anime({
+        targets: '#text-posts .card',
+        opacity: [0, 1],
+        translateX: [-50, 0],
+        scale: [0.9, 1],
+        delay: anime.stagger(100),
+        easing: 'easeOutQuad',
+        duration: 800
+    });
 }
 
 function setupCopyButtons() {
@@ -346,4 +370,4 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM content loaded');
     fetchJobData();
     setupEventListeners();
-}); 
+});
