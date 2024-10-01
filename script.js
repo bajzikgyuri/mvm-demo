@@ -113,46 +113,99 @@ function populateJobDetails() {
     try {
         const jobDetailsSection = document.getElementById('job-details');
         jobDetailsSection.innerHTML = `
-            <div class="card bg-secondary shadow-xl">
-                <div class="card-body text-gray-800">
-                    <h3 class="card-title text-primary">${selectedJob.Cégnév || 'N/A'}</h3>
-                    <p><strong>Munkavégzés helye:</strong> ${selectedJob['Munkavégzés helye'] || 'N/A'}</p>
-                    <p><strong>Szakterület:</strong> ${selectedJob.Szakterület || 'N/A'}</p>
-                    <p><strong>Foglalkoztatás típusa:</strong> ${selectedJob['Foglalkoztatás típusa'] || 'N/A'}</p>
-                    <p><strong>Szerződés típusa:</strong> ${selectedJob['Szerződés típusa'] || 'N/A'}</p>
-                    <p><strong>Napi munkaidő:</strong> ${selectedJob['Napi munkaidő'] || 'N/A'}</p>
-                    <p><strong>Bevezető:</strong> ${selectedJob.Bevezető || 'N/A'}</p>
-                    <div class="collapse collapse-plus bg-white mt-4">
-                        <input type="checkbox" /> 
-                        <div class="collapse-title text-xl font-medium text-primary">
-                            Feladatok
-                        </div>
-                        <div class="collapse-content"> 
-                            <ul class="list-disc list-inside">
-                                ${parseAndRenderList(selectedJob['Feladatok (tömb)'])}
-                            </ul>
-                        </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="card bg-secondary shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-primary">${selectedJob.Cégnév || 'N/A'}</h3>
+                        <p class="text-gray-600">${getJobTitle(selectedJob)}</p>
                     </div>
-                    <div class="collapse collapse-plus bg-white mt-4">
-                        <input type="checkbox" /> 
-                        <div class="collapse-title text-xl font-medium text-primary">
-                            Elvárások
-                        </div>
-                        <div class="collapse-content"> 
-                            <ul class="list-disc list-inside">
-                                ${parseAndRenderList(selectedJob['Elvárások (tömb)'])}
-                            </ul>
-                        </div>
+                </div>
+                
+                <div class="card bg-secondary shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-primary">Munkavégzés helye</h3>
+                        <p>${selectedJob['Munkavégzés helye'] || 'N/A'}</p>
                     </div>
-                    <p class="mt-4"><strong>Jelentkezési határidő:</strong> ${selectedJob['Jelentkezési határidő'] || 'N/A'}</p>
+                </div>
+                
+                <div class="card bg-secondary shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-primary">Szakterület</h3>
+                        <p>${selectedJob.Szakterület || 'N/A'}</p>
+                    </div>
+                </div>
+                
+                <div class="card bg-secondary shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-primary">Foglalkoztatás típusa</h3>
+                        <p>${selectedJob['Foglalkoztatás típusa'] || 'N/A'}</p>
+                    </div>
+                </div>
+                
+                <div class="card bg-secondary shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-primary">Szerződés típusa</h3>
+                        <p>${selectedJob['Szerződés típusa'] || 'N/A'}</p>
+                    </div>
+                </div>
+                
+                <div class="card bg-secondary shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-primary">Napi munkaidő</h3>
+                        <p>${selectedJob['Napi munkaidő'] || 'N/A'}</p>
+                    </div>
+                </div>
+                
+                <div class="card bg-secondary shadow-xl col-span-full">
+                    <div class="card-body">
+                        <h3 class="card-title text-primary">Bevezető</h3>
+                        <p>${selectedJob.Bevezető || 'N/A'}</p>
+                    </div>
+                </div>
+                
+                <div class="card bg-secondary shadow-xl col-span-full">
+                    <div class="card-body">
+                        <h3 class="card-title text-primary mb-2">Feladatok</h3>
+                        <ul class="list-disc list-inside">
+                            ${parseAndRenderList(selectedJob['Feladatok (tömb)'])}
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card bg-secondary shadow-xl md:col-span-1 lg:col-span-2">
+                    <div class="card-body">
+                        <h3 class="card-title text-primary mb-2">Elvárások</h3>
+                        <ul class="list-disc list-inside">
+                            ${parseAndRenderList(selectedJob['Elvárások (tömb)'])}
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card bg-secondary shadow-xl md:col-span-1">
+                    <div class="card-body">
+                        <h3 class="card-title text-primary">Jelentkezési határidő</h3>
+                        <p>${selectedJob['Jelentkezési határidő'] || 'N/A'}</p>
+                    </div>
                 </div>
             </div>
         `;
         console.log('Job details populated');
+        animateJobDetails();
     } catch (error) {
         console.error('Error populating job details:', error);
         showErrorModal('Hiba történt a munkakör részleteinek megjelenítésekor.');
     }
+}
+
+function animateJobDetails() {
+    anime({
+        targets: '#job-details .card',
+        opacity: [0, 1],
+        translateY: [20, 0],
+        delay: anime.stagger(100),
+        easing: 'easeOutQuad',
+        duration: 500
+    });
 }
 
 function parseAndRenderList(data) {
