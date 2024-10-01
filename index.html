@@ -24,6 +24,33 @@
         .image-container:hover img {
             transform: scale(1.05);
         }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #f0b323;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #job-list {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        #job-list li {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        #job-list li:hover {
+            background-color: #f7fafc;
+        }
+        #job-list li.selected {
+            background-color: #e2e8f0;
+        }
     </style>
     <script>
         tailwind.config = {
@@ -49,15 +76,27 @@
     </script>
 </head>
 <body>
+    <div id="loading-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="spinner"></div>
+    </div>
+
     <div id="job-modal" class="modal modal-open">
-        <div class="modal-box">
+        <div class="modal-box w-11/12 max-w-5xl">
             <h3 class="font-bold text-lg mb-4">Válasszon munkakört</h3>
             <div class="form-control w-full">
-                <input type="text" id="job-autocomplete" placeholder="Kezdje el gépelni a munkakört..." class="input input-bordered w-full" />
-                <ul id="job-suggestions" class="menu bg-base-100 w-full mt-2 hidden"></ul>
+                <ul id="job-list" class="menu bg-base-100 w-full p-2 rounded-box">
+                    <!-- Job list will be populated here -->
+                </ul>
             </div>
+        </div>
+    </div>
+
+    <div id="error-modal" class="modal">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg">Hiba</h3>
+            <p id="error-message" class="py-4"></p>
             <div class="modal-action">
-                <button id="select-job" class="btn btn-primary">Kiválasztás</button>
+                <button class="btn" onclick="document.getElementById('error-modal').classList.remove('modal-open')">Bezárás</button>
             </div>
         </div>
     </div>

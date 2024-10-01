@@ -1,9 +1,18 @@
 let jobList = [];
 let selectedJob;
 
+function showLoadingSpinner() {
+    document.getElementById('loading-overlay').classList.remove('hidden');
+}
+
+function hideLoadingSpinner() {
+    document.getElementById('loading-overlay').classList.add('hidden');
+}
+
 async function fetchJobData() {
     try {
         console.log('Fetching job data...');
+        showLoadingSpinner();
         const response = await fetch('data.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -20,6 +29,8 @@ async function fetchJobData() {
     } catch (error) {
         console.error('Error fetching job data:', error);
         showErrorModal('Hiba történt az adatok betöltése közben. Kérjük, próbálja újra később.');
+    } finally {
+        hideLoadingSpinner();
     }
 }
 
@@ -31,57 +42,15 @@ function showJobModal() {
 
 function populateJobList() {
     console.log('Populating job list');
-    const jobAutocomplete = document.getElementById('job-autocomplete');
-    const jobSuggestions = document.getElementById('job-suggestions');
+    const jobListElement = document.getElementById('job-list');
+    jobListElement.innerHTML = '';
 
-    function renderSuggestions(filteredJobs) {
-        jobSuggestions.innerHTML = '';
-        filteredJobs.forEach(job => {
-            const li = document.createElement('li');
-            li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
-            li.textContent = `${job.Cégnév} - ${getJobTitle(job)}`;
-            li.addEventListener('click', () => {
-                jobAutocomplete.value = li.textContent;
-                jobSuggestions.classList.add('hidden');
-            });
-            jobSuggestions.appendChild(li);
-        });
-        jobSuggestions.classList.toggle('hidden', filteredJobs.length === 0);
-    }
-
-    function getJobTitle(job) {
-        const urlParts = job.URL.split('/');
-        const lastPart = urlParts[urlParts.length - 1];
-        const titlePart = lastPart.replace(/-\d+$/, '');
-        return titlePart.replace(/-/g, ' ');
-    }
-
-    renderSuggestions(jobList);
-
-    jobAutocomplete.addEventListener('input', function() {
-        const value = this.value.trim().toLowerCase();
-        console.log('Autocomplete input:', value);
-        const filteredJobs = jobList.filter(job => 
-            job.Cégnév.toLowerCase().includes(value) || getJobTitle(job).toLowerCase().includes(value)
-        );
-        console.log('Filtered jobs:', filteredJobs);
-        renderSuggestions(filteredJobs);
-    });
-
-    document.getElementById('select-job').addEventListener('click', () => {
-        const selectedJobText = jobAutocomplete.value.toLowerCase();
-        console.log('Selected job text:', selectedJobText);
-        const selectedJob = jobList.find(job => {
-            const jobText = `${job.Cégnév} - ${getJobTitle(job)}`.toLowerCase();
-            return jobText === selectedJobText;
-        });
-        if (selectedJob) {
-            console.log('Job selected:', selectedJob);
-            selectJob(selectedJob);
-        } else {
-            console.log('Invalid job selection');
-            showErrorModal('Kérjük, válasszon egy érvényes munkakört a listából.');
-        }
+    jobList.forEach((job, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<a>${job.Cégnév} - ${getJobTitle(job)}</a>`;
+        li.setAttribute('data-index', index);
+        li.addEventListener('click', () => selectJob(job));
+        jobListElement.appendChild(li);
     });
 }
 
@@ -89,12 +58,16 @@ function selectJob(job) {
     console.log('Selecting job:', job);
     selectedJob = job;
     document.getElementById('job-modal').classList.remove('modal-open');
-    document.getElementById('main-content').classList.remove('hidden');
-    document.getElementById('selected-job').textContent = `${job.Cégnév} - ${getJobTitle(job)}`;
-    populateJobDetails();
-    populateImageGallery();
-    populateTextPosts();
-    animateContent();
+    showLoadingSpinner();
+    setTimeout(() => {
+        hideLoadingSpinner();
+        document.getElementById('main-content').classList.remove('hidden');
+        document.getElementById('selected-job').textContent = `${job.Cégnév} - ${getJobTitle(job)}`;
+        populateJobDetails();
+        populateImageGallery();
+        populateTextPosts();
+        animateContent();
+    }, 1000);
 }
 
 function showErrorModal(message) {
@@ -242,19 +215,42 @@ function populateImageGallery() {
             imgContainer.className = 'relative group image-container';
             imgContainer.innerHTML = `
                 <div class="w-full aspect-square overflow-hidden rounded-lg shadow-md">
-                    <img src="${url}" alt="Job related image" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                    <img data-src="${url}" alt="Job related image" class="w-full h-full object-cover lazy-load" src="placeholder.jpg">
                 </div>
                 <button class="btn bg-primary text-white hover:bg-primary-dark btn-sm absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Letöltés</button>
             `;
             imageGallerySection.appendChild(imgContainer);
         });
         console.log('Image gallery populated');
+        setupLazyLoading();
         animateImageGallery();
     } catch (error) {
         console.error('Error populating image gallery:', error);
         showErrorModal('Hiba történt a képgaléria megjelenítésekor.');
     }
-} 
+}
+
+function setupLazyLoading() {
+    const images = document.querySelectorAll('img.lazy-load');
+    const options = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.classList.remove('lazy-load');
+                observer.unobserve(img);
+            }
+        });
+    }, options);
+
+    images.forEach(img => observer.observe(img));
+}
 
 function animateImageGallery() {
     anime({
