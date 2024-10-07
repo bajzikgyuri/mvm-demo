@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Álláslehetőségek</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+
+    <!-- ScrollMagic -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.8/ScrollMagic.min.js"></script>
+    
+    <!-- ScrollMagic Plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.8/plugins/debug.addIndicators.min.js"></script>
+
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollToPlugin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.8/plugins/animation.gsap.min.js"></script>
+
+    <!-- Chart.js (specify version 3.9.1) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            padding-top: 60px;
+            background-color: #ffffff;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar.scrolled {
+            padding: 5px 10px;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #f0b323 !important;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand img {
+            height: 30px;
+            margin-right: 5px;
+        }
+
+        .navbar-nav {
+            margin: 0 auto;
+        }
+
+        .navbar-nav .nav-link {
+            color: #000000 !important;
+            font-weight: 600;
+            position: relative;
+            margin: 0 5px;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .navbar-nav .nav-link.active {
+            color: #f0b323 !important;
+        }
+
+        .navbar-nav .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #f0b323;
+        }
+
+        .nav-link:hover {
+            color: #f0b323 !important;
+        }
+
+        /* Sections */
+        section {
+            min-height: auto; /* Let the content determine the height */
+            padding: 60px 0;
+            box-sizing: border-box;
+            scroll-margin-top: 80px; /* For smooth scroll offset */
+        }
+
+        /* Headings */
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #f0b323;
+        }
+
+        .section-title p {
+            font-size: 1rem;
+            color: #777;
+        }
+
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Magnifying Glass Icon */
+        .expand-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 5px;
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .expand-icon:hover {
+            background-color: rgba(255, 255, 255, 1);
+        }
+
+        /* Image Gallery */
+        .img-fluid {
+            border-radius: 10px;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            aspect-ratio: 1 / 1;
+        }
+
+        /* Download and Copy Icons */
+        .icon-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 5px;
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .icon-button:hover {
+            background-color: rgba(255, 255, 255, 1);
+        }
+
+        /* Modal Styles */
+        .modal-header {
+            border-bottom: none;
+        }
+
+        .modal-header .btn-close {
+            background: none;
+            border: none;
+        }
+
+        .modal-content {
+            border-radius: 10px;
+        }
+
+        /* Bullet Lists in Modal */
+        .modal-body ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .modal-body li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .modal-body li i {
+            margin-right: 8px;
+        }
+
+        .green-check i {
+            color: green;
+        }
+
+        .gray-check i {
+            color: gray;
+        }
+
+        .yellow-plus i {
+            color: #f0b323;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1199px) {
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 991px) {
+            .navbar .job-selector {
+                margin-top: 10px;
+            }
+
+            .section-title h2 {
+                font-size: 1.6rem;
+            }
+
+            .card-title {
+                font-size: 1.1rem;
+            }
+
+            section {
+                padding: 40px 0;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .navbar-nav {
+                margin-top: 10px;
+            }
+            
+            .navbar .job-selector {
+                margin-top: 10px;
+                width: 100%;
+            }
+            
+            .card {
+                margin-bottom: 15px;
+            }
+
+            .section-title h2 {
+                font-size: 1.4rem;
+            }
+
+            .section-title p {
+                font-size: 0.9rem;
+            }
+
+            .card-body {
+                padding: 10px;
+            }
+
+            .card-title {
+                font-size: 1rem;
+            }
+
+            .card-text {
+                font-size: 0.8rem;
+            }
+
+            section {
+                padding: 30px 0;
+                min-height: auto;
+            }
+
+            .navbar-brand img {
+                height: 25px;
+            }
+
+            .navbar-toggler {
+                font-size: 0.9rem;
+            }
+
+            .nav-dots {
+                display: none;
+            }
+        }
+
+        @media (max-width: 575px) {
+            .navbar-brand {
+                font-size: 1rem;
+            }
+
+            .navbar-toggler {
+                padding: 0.25rem 0.5rem;
+            }
+
+            .section-title h2 {
+                font-size: 1.2rem;
+            }
+
+            .section-title p {
+                font-size: 0.8rem;
+            }
+
+            .card {
+                margin-bottom: 10px;
+            }
+
+            .card-body {
+                padding: 8px;
+            }
+
+            .card-title {
+                font-size: 0.9rem;
+            }
+
+            .card-text {
+                font-size: 0.7rem;
+            }
+
+            .icon-button, .expand-icon {
+                padding: 3px;
+            }
+
+            .modal-dialog {
+                margin: 0.5rem;
+            }
+
+            .modal-body {
+                padding: 0.5rem;
+            }
+
+            section {
+                padding: 20px 0;
+                min-height: auto;
+            }
+        }
+
+        @media (min-width: 1920px) {
+            .section-title h2 {
+                font-size: 2.2rem;
+            }
+
+            .card-title {
+                font-size: 1.4rem;
+            }
+
+            .card-text {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .navbar .job-selector {
+                margin-top: 0;
+            }
+        }
+
+        /* Align job selector to the right */
+        .navbar .job-selector {
+            margin-left: auto;
+        }
+
+        /* Navigation Dots */
+        .nav-dots {
+            position: fixed;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin: 8px 0;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .nav-dot.active {
+            background-color: #f0b323;
+            transform: scale(1.2);
+        }
+
+        /* Toast message */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1055;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* Statistic Cards */
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+            color: #333;
+            border-radius: 15px;
+            background-color: #ffffff;
+            border: 1px solid #f0b323;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #f0b323;
+        }
+
+        .stat-card p {
+            font-size: 1.2rem;
+            margin: 0;
+            color: #555;
+        }
+
+        /* Chart Container */
+        #chartContainer {
+            position: relative;
+            height: 60vh;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg" id="navbar">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <img src="https://mvm.karrierportal.hu/media/picture/mvm/og-img.jpg" alt="Céglogó">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- Centered Nav Links -->
+            <ul class="navbar-nav mx-auto align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link" href="#jobDetailsSection">Részletek</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#imageGallerySection">Galéria</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#textSection">Szövegek</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#analysisSection">Elemzés</a>
+                </li>
+            </ul>
+            <!-- Job Selector -->
+            <div class="job-selector">
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="jobSelector" data-bs-toggle="dropdown" aria-expanded="false">
+                        Állás kiválasztása
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="jobSelector" id="jobDropdown">
+                        <!-- Options will be populated by JavaScript -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Navigation Dots -->
+<div class="nav-dots">
+    <div class="nav-dot" data-section="jobDetailsSection"></div>
+    <div class="nav-dot" data-section="imageGallerySection"></div>
+    <div class="nav-dot" data-section="textSection"></div>
+    <div class="nav-dot" data-section="analysisSection"></div>
+</div>
+
+<!-- Sections -->
+<section id="jobDetailsSection">
+    <div class="container">
+        <!-- Headings -->
+        <div class="section-title">
+            <h2 id="jobTitleHeading">Részletek</h2>
+            <p>Az álláshirdetés részletei a karrierportálról</p>
+        </div>
+        <div id="jobDetails">
+            <!-- Állás részletei kerülnek ide -->
+        </div>
+    </div>
+</section>
+
+<section id="imageGallerySection">
+    <div class="container">
+        <!-- Headings -->
+        <div class="section-title">
+            <h2>Galéria</h2>
+            <p>Az álláshirdetés posztolásához javasolt AI generált képek</p>
+        </div>
+        <div id="imageGallery">
+            <!-- Képgaléria kerül ide -->
+        </div>
+    </div>
+</section>
+
+<section id="textSection">
+    <div class="container">
+        <!-- Headings -->
+        <div class="section-title">
+            <h2>Szövegek</h2>
+            <p>Az álláshirdetés posztolásához javasolt AI generált poszt szövegek</p>
+        </div>
+        <div id="textContent">
+            <!-- Szövegek kerülnek ide -->
+        </div>
+    </div>
+</section>
+
+<!-- Updated Analysis Section -->
+<section id="analysisSection">
+    <div class="container">
+        <!-- Headings -->
+        <div class="section-title">
+            <h2>Elemzés</h2>
+            <p>Az álláshirdetés teljesítményének részletes elemzése különböző forrásokra és csatornákra bontva</p>
+        </div>
+
+        <!-- Statistic Cards -->
+        <div class="row mb-4" id="statCards">
+            <!-- Cards will be populated by JavaScript -->
+        </div>
+
+        <!-- Chart -->
+        <div id="chartContainer">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+</section>
+
+<!-- Modals -->
+<!-- Bevezető Modal -->
+<div class="modal fade" id="bevezetoModal" tabindex="-1" aria-labelledby="bevezetoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Bevezető</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Bezárás"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Bevezető teljes szövege -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Részletek Modal -->
+<div class="modal fade" id="reszletekModal" tabindex="-1" aria-labelledby="reszletekModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Részletes információk</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Bezárás"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Modal content will be populated dynamically -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast üzenet -->
+<div id="toastMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="toast-body"></div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- JavaScript Logic -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const jsonData = {"data":[{"URL":"https://mvm.karrierportal.hu/allas/operativ-beszerzo-eromuvi-beszerzesi-teruletre-7745","Pozíció neve":"Operatív beszerző – Erőművi beszerzési területre","Munkavégzés helye":"Visonta vagy Budapest III. kerület","Szakterület":"Szállítás, Beszerzés, Logisztika","Foglalkoztatás típusa":"Munkaszerződés","Szerződés típusa":"Határozatlan idejű","Napi munkaidő":"Teljes munkaidőben","Bevezető":"A hozzárendelt anyagcsoportok vonatkozásában biztosítja a társaság működéséhez szükséges anyag, eszköz és szolgáltatások költséghatékony és határidőre történő beszerzését keret/konszignációs szerződésekből történő lehívásokkal, valamint értékhatár alatti anyag, eszköz és szolgáltatási igények esetén egyedi megrendelések létrehozásával.","Feladatok (tömb)":"[\"A hozzárendelt anyagcsoportokra vonatkozóan keret/konszignációs lehívásokat, értékhatár alatti megrendeléseket hoz létre\",\"Piackutatást végez a beszerzések előtt\",\"Napi operatív szinten kapcsolatot tart a szállítókkal az általa készített lehívások és értékhatár alatti egyedi megrendelések bonyolítása során\",\"Figyeli a raktárkészletet és figyelemmel kíséri, biztosítja a készletgazdálkodási szempontokat a beérkező igények és a kiadandó megrendelések között\",\"Késedelmes teljesítés vagy minőségi reklamációk esetében megteszi a szükséges intézkedéseket\",\"Gondoskodik a megrendelések szabályzat szerinti archiválásáról\",\"Biztosítja a szükséges adatszolgáltatásokat\"]","Elvárások (tömb)":"[\"Felsőfokú végzettség\",\"Legalább 1 éves tapasztalat beszerzési/logisztikai/egyéb adminisztrációs területen\",\"MS Office irodai alkalmazások felhasználói szintű ismerete\",\"Kiemelkedő kommunikációs és problémamegoldó készség\",\"Jó csapatjátékos\",\"Szervezőkészség, precíz munkavégzés\"]","Előnyt jelent (tömb)":"[\"Vállalatirányítási rendszerek (pl.: SAP, SRM) ismerete\",\"Elektronikus beszerzési rendszerek (eBeszerzés, eKatalógus stb.) ismerete\"]","Értékajánlat (tömb)":"[\"Csapatunk méretéből és feladataink sokszínűségéből adódóan számos fejlődési lehetőséget biztosítunk beszerzőink számára\",\"Egy izgalmas, dinamikus piaci környezetben találhatsz személyre szabott, kihívást jelentő feladatokat\",\"Színes programokat, sportolási lehetőséget biztosítunk\",\"Munkatársaink egészségbiztosításban részesülnek és részt vehetnek szűrőprogramjainkon\",\"Piacon kiemelkedő béren kívüli juttatási csomag\"]","Jelentkezési határidő":"2024.10.27.","Cégnév":"MVM Services Zrt.","imageURLs":["https://placid-fra.fra1.digitaloceanspaces.com/production/rest-images/yoca0igrfalzk/rest-5d332c42469be398662ff4f4d1e10638-w83u3hc6.jpg","https://placid-fra.fra1.digitaloceanspaces.com/production/rest-images/qruwoxmp5grow/rest-be69ac2ae4e8b2d1c7664df4ebc0396a-mwfp67oa.jpg","https://placid-fra.fra1.digitaloceanspaces.com/production/rest-images/cmmonhpc0ujur/rest-4ea62884b747f03df0b52cf373a41693-pbvtchsm.jpg"],"multilineTexts":["🌟 Karrierlehetőség az MVM Services Zrt.-nél! 🌟  \n📍 Helyszín: Visonta vagy Budapest III. kerület  \n💼 Pozíció: Operatív beszerző – Erőművi beszerzési területre  \n💰 Versenyképes fizetés és kiemelkedő juttatások  \n🔍 Részletek:  \n- Felelősségek: Keret/konszignációs lehívások és egyedi megrendelések létrehozása, piackutatás, napi kapcsolattartás a szállítókkal, raktárkészlet figyelése és készletgazdálkodás, késedelmes teljesítések kezelése, megrendelések archiválása, adatszolgáltatások biztosítása  \n- Elvárások: Felsőfokú végzettség, legalább 1 év tapasztalat beszerzés/logisztika területén, MS Office ismeretek, kiemelkedő kommunikációs készség, jó csapatjátékos, precíz szervezőkészség  \nHa készen állsz a következő lépésre a karrieredben, jelentkezz most! 👉 [Jelentkezem](https://mvm.karrierportal.hu/allas/operativ-beszerzo-eromuvi-beszerzesi-teruletre-7745)  \n#Karrier #Álláslehetőség #Logisztika\noperativ-beszerzo-eromuvi","🔹 MVM Services Zrt. csatlakozz hozzánk! 🔹  \n🏢 Munkavégzés helye: Visonta vagy Budapest III. kerület  \n📋 Pozíció: Operatív beszerző – Erőművi beszerzési területre  \n✨ Amit kínálunk:  \n- Számos fejlődési lehetőség  \n- Dinamikus piaci környezet  \n- Színes programok és sportolási lehetőségek  \n👤 Ideális jelölt:  \n- 🎓 Felsőfokú végzettség  \n- 📅 Legalább 1 év tapasztalat beszerzés/logisztika területén  \nNe hagyd ki ezt a lehetőséget! Kattints ide a részletekért és a jelentkezéshez: [Jelentkezem](https://mvm.karrierportal.hu/allas/operativ-beszerzo-eromuvi-beszerzesi-teruletre-7745)  \n#Állás #Logisztika #CsatlakozzHozzánk\noperativ-beszerzo-eromu","📢 Új pozíció nyílt az MVM Services Zrt.-nél! 📢  \n🌐 Helyszín: Visonta vagy Budapest III. kerület és Rugalmas Munkaidő  \n💼 Pozíció: Operatív beszerző – Erőművi beszerzési területre  \n💡 Feladatok:  \n- Keret/konszignációs lehívások és egyedi megrendelések létrehozása  \n- Piackutatás a beszerzések előtt  \n- Napi kapcsolattartás a szállítókkal  \n- Raktárkészlet figyelése és készletgazdálkodás  \n- Késedelmes teljesítések kezelése  \n- Megrendelések archiválása  \n- Adatszolgáltatások biztosítása  \n💸 Juttatások:  \n- Versenyképes fizetés  \n- Egészségbiztosítás és szűrőprogramok  \n- Kiemelkedő béren kívüli juttatások  \nHa szakmai tapasztalatod van és szeretnél egy dinamikus csapat tagja lenni, várjuk jelentkezésedet! 🌟 [Jelentkezem](https://mvm.karrierportal.hu/allas/operativ-beszerzo-eromuvi-beszerzesi-teruletre-7745)  \n#ÚjPozíció #Állás #Felnőtteknek\noperativ-beszerzo-eromuvi"],"additionalData":{"facebook":{"organic":{"v":52,"a":0},"cpc":{"v":0,"a":0},"referral":{"v":19,"a":0}},"linkedin":{"organic":{"v":246,"a":20},"cpc":{"v":249,"a":20},"referral":{"v":187,"a":25}},"google":{"organic":{"v":0,"a":0},"cpc":{"v":167,"a":7},"referral":{"v":32,"a":0}},"profession":{"cpc":{"v":343,"a":51},"referral":{"v":318,"a":56}},"dreamjobs":{"cpc":{"v":0,"a":0},"referral":{"v":0,"a":0}},"email":{"email":{"v":57,"a":4}},"direct":{"none":{"v":73,"a":4}},"egyéb":{"organic":{"v":27,"a":1},"cpc":{"v":48,"a":2},"referral":{"v":46,"a":1},"email":{"v":55,"a":2}}}},{"URL":"https://mvm.karrierportal.hu/allas/halozatfejlesztesi-szakerto-7790","Pozíció neve":"Hálózatfejlesztési szakértő","Munkavégzés helye":"Miskolc vagy Budapest","Szakterület":"Mérnök","Foglalkoztatás típusa":"Munkaszerződés","Szerződés típusa":"Határozatlan idejű","Napi munkaidő":"Teljes munkaidőben","Bevezető":"","Feladatok (tömb)":"[\"Elosztóhálózat (Nagy- és középfeszültség) távlati tervezése, kiemelten fókuszálva a megújuló integrációra\",\"Térségvizsgálatok elkészítése, hálózati szimulációk futtatása\",\"Elosztóhálózati kiemelt ügyféligények kiszolgálásához szükséges egyedi műszaki feltételek megadása\",\"Hálózati beruházások, stratégiai fejlesztések meghatározása, tervfeladatlapok készítése/véleményezése beruházások indításához\",\"Elosztóhálózatra csatlakozó kiserőművek hálózati csatlakozási terveinek szakértői ellenőrzése jóváhagyáshoz\",\"A hálózatvizsgálati módszertan, irányelvek folyamatos aktualizálása, szabályozási változások követése\",\"Egyedi hálózati projektekben részvétel, a társaságcsoport képviselete iparági fórumokon\",\"Nemzetközi és hazai villamos energia ipari trendek naprakész követése, implementálása\",\"Hálózati elemzések készítése, vezetői döntéselőkészítő anyagok összeállítása és bemutatása, javaslattétel intézkedésekre\"]","Elvárások (tömb)":"[\"Villamosmérnöki végzettség (erősáramú)\",\"Minimum 3 éves releváns szakmai tapasztalat\",\"Hálózatszimulációs tapasztalat (pl.: Neplan, PSS/E )\",\"Elosztóhálózat ismerete\",\"Vonatkozó jogszabályok, szabályzatok és szabványok ismerete (pl. VET, Elosztói szabályzat)\",\"Angol társalgási szintű nyelvtudás\",\"Analitikus készség\"]","Előnyt jelent (tömb)":"[\"Programozási ismeretek\"]","Értékajánlat (tömb)":"[\"Teljesítmény alapján prémium vagy bónusz\",\"Folyamatos szakmai fejlődési lehetőségek (tréningek, konferenciák)\",\"Széles körű béren kívüli juttatási csomag (cafeteria, egészségbiztosítás, kockázati balesetbiztosítás)\",\"Üdülési, sportolási lehetőségek, rendezvények\",\"Kiemelkedő teljesítmény jutalmazása\",\"Rugalmas munkaidő\",\"Vállalati szabadidős és szakmai rendezvények\"]","Jelentkezési határidő":"2024.10.27.","Cégnév":"MVM Émász Áramhálózati Kft.","imageURLs":["https://placid-fra.fra1.digitaloceanspaces.com/production/rest-images/yoca0igrfalzk/rest-04e3ab17b2c469ebc43463de136a5052-qfrknrzp.jpg","https://placid-fra.fra1.digitaloceanspaces.com/production/rest-images/qruwoxmp5grow/rest-cabd6316a627be7d4c8546a3d9d06c76-puliif2i.jpg","https://placid-fra.fra1.digitaloceanspaces.com/production/rest-images/cmmonhpc0ujur/rest-ed2b62d9a70ac0d19197d0c6a142e423-rdgnqc2r.jpg"],"multilineTexts":["🌟 Karrierlehetőség az MVM Émász Áramhálózati Kft.-nél! 🌟  \n📍 Helyszín: Miskolc vagy Budapest  \n💼 Pozíció: Hálózatfejlesztési Szakértő  \n💰 Versenyképes fizetés és juttatások  \n🔍 Részletek:  \n- Felelősségek: Elosztóhálózat tervezése, térségvizsgálatok és hálózati szimulációk, ügyféligények meghatározása, hálózati beruházások tervezése, kiserőművek csatlakozási terveinek ellenőrzése, módszertan frissítése, trendek követése, elemzések készítése  \n- Elvárások: Villamosmérnöki végzettség, minimum 3 év tapasztalat, hálózatszimulációs tapasztalat, elosztóhálózat ismerete, jogszabályok és szabványok ismerete, angol nyelvtudás, analitikus készség  \nHa készen állsz a következő lépésre a karrieredben, jelentkezz most! 👉 [JELENTKEZÉS LINK](https://mvm.karrierportal.hu/allas/halozatfejlesztesi-szakerto-7790)  \n#Karrier #Álláslehetőség #Felnőtteknek\nhalozatfejlesztesi-szakerto","🔹 MVM Émász Áramhálózati Kft. csatlakozz hozzánk! 🔹  \n🏢 Munkavégzés helye: Miskolc vagy Budapest  \n📋 Pozíció: Hálózatfejlesztési Szakértő  \n✨ Amit kínálunk:  \n- Teljesítmény alapján prémium vagy bónusz  \n- Folyamatos szakmai fejlődési lehetőségek  \n- Széles körű béren kívüli juttatási csomag  \n👤 Ideális jelölt:  \n- Villamosmérnöki végzettség (erősáramú)  \n- Minimum 3 éves releváns szakmai tapasztalat  \n- Hálózatszimulációs tapasztalat (pl.: Neplan, PSS/E)  \nNe hagyd ki ezt a lehetőséget! Kattints ide a részletekért és a jelentkezéshez: [JELENTKEZÉS LINK](https://mvm.karrierportal.hu/allas/halozatfejlesztesi-szakerto-7790)  \n#Állás #FelnőttMunka #CsatlakozzHozzánk\nhalozatfejlesztesi-szakerto","📢 Új pozíció nyílt az MVM Émász Áramhálózati Kft.-nél! 📢  \n🌐 Helyszín: Miskolc vagy Budapest és Rugalmas Munkaidő  \n💼 Pozíció: Hálózatfejlesztési Szakértő  \n💡 Feladatok:  \n- Elosztóhálózat (Nagy- és középfeszültség) távlati tervezése, megújuló integrációval  \n- Térségvizsgálatok és hálózati szimulációk készítése  \n- Kiemelt ügyféligények műszaki feltételeinek meghatározása  \n💸 Juttatások:  \n- Teljesítmény alapján prémium vagy bónusz  \n- Folyamatos szakmai fejlődési lehetőségek  \n- Széles körű béren kívüli juttatási csomag  \nHa szakmai tapasztalatod van és szeretnél egy dinamikus csapat tagja lenni, várjuk jelentkezésedet! 🌟 [JELENTKEZÉS LINK](https://mvm.karrierportal.hu/allas/halozatfejlesztesi-szakerto-7790)  \n#ÚjPozíció #Állás #Felnőtteknek\nhalozatfejlesztesi-szakerto"],"additionalData":{"facebook":{"organic":{"v":0,"a":0},"cpc":{"v":51,"a":1},"referral":{"v":0,"a":0}},"linkedin":{"organic":{"v":264,"a":29},"cpc":{"v":197,"a":16},"referral":{"v":0,"a":0}},"google":{"organic":{"v":86,"a":3},"cpc":{"v":103,"a":7},"referral":{"v":39,"a":0}},"profession":{"cpc":{"v":0,"a":0},"referral":{"v":288,"a":31}},"dreamjobs":{"cpc":{"v":95,"a":7},"referral":{"v":0,"a":0}},"email":{"email":{"v":95,"a":6}},"direct":{"none":{"v":115,"a":5}},"egyéb":{"organic":{"v":12,"a":0},"cpc":{"v":0,"a":0},"referral":{"v":51,"a":1},"email":{"v":53,"a":2}}}}]};
+
+        const jobs = jsonData.data;
+        let currentJob = jobs[0];
+
+        // Initialize ScrollMagic (optional, if you want to keep the navbar effects)
+        let controller = new ScrollMagic.Controller();
+
+        // Navigation Bar Animation on Scroll
+        const navbar = document.querySelector('.navbar');
+        new ScrollMagic.Scene({
+            triggerElement: 'body',
+            triggerHook: 0,
+            offset: 50
+        })
+        .setClassToggle(navbar, 'scrolled')
+        .addTo(controller);
+
+        // Update Active Nav Link and Nav Dot on Scroll
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const navDots = document.querySelectorAll('.nav-dot');
+
+        sections.forEach((section, index) => {
+            new ScrollMagic.Scene({
+                triggerElement: section,
+                triggerHook: 0.5,
+                duration: '100%'
+            })
+            .on('enter', () => {
+                navLinks.forEach(link => link.classList.remove('active'));
+                navDots.forEach(dot => dot.classList.remove('active'));
+                navLinks[index].classList.add('active');
+                navDots[index].classList.add('active');
+            })
+            .addTo(controller);
+        });
+
+        // Smooth Scroll to Sections with Animation
+        document.querySelectorAll('a.nav-link, .nav-dot').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href') || `#${this.dataset.section}`;
+                const targetElement = document.querySelector(targetId);
+                
+                gsap.to(window, {
+                    duration: 1.0,
+                    scrollTo: {
+                        y: targetElement.offsetTop - 60, // Offset for fixed navbar
+                        autoKill: false
+                    },
+                    ease: "power4.inOut"
+                });
+            });
+        });
+
+        // Job Selector without Autocomplete
+        const jobSelector = document.getElementById('jobSelector');
+        const jobDropdown = document.getElementById('jobDropdown');
+
+        function populateJobDropdown() {
+            jobDropdown.innerHTML = '';
+            jobs.forEach((job, index) => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.classList.add('dropdown-item');
+                a.href = '#';
+                a.textContent = job['Pozíció neve']; // Show only the job name
+                a.dataset.index = index;
+                a.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    currentJob = jobs[this.dataset.index];
+                    jobSelector.textContent = this.textContent;
+                    displayJobDetails(currentJob);
+                    displayImageGallery(currentJob);
+                    displayTextContent(currentJob);
+                    displayAnalysis(currentJob);
+                });
+                li.appendChild(a);
+                jobDropdown.appendChild(li);
+            });
+        }
+
+        // Display Job Details
+        const jobDetails = document.getElementById('jobDetails');
+
+        function displayJobDetails(job) {
+            // Update the heading in the first section
+            const jobTitleHeading = document.getElementById('jobTitleHeading');
+            if (jobTitleHeading) {
+                jobTitleHeading.textContent = job['Pozíció neve'];
+            }
+
+            jobDetails.innerHTML = '';
+
+            const row = document.createElement('div');
+            row.classList.add('row', 'gy-3');
+
+            const dataKeys = [
+                { key: 'Munkavégzés helye', icon: 'bi-geo-alt' },
+                { key: 'Szakterület', icon: 'bi-briefcase' },
+                { key: 'Foglalkoztatás típusa', icon: 'bi-file-earmark-text' },
+                { key: 'Szerződés típusa', icon: 'bi-calendar-check' },
+                { key: 'Napi munkaidő', icon: 'bi-clock' },
+                { key: 'Jelentkezési határidő', icon: 'bi-calendar-event' },
+                { key: 'Cégnév', icon: 'bi-building' }
+            ];
+
+            dataKeys.forEach(item => {
+                const col = document.createElement('div');
+                col.classList.add('col-md-4', 'col-sm-6');
+
+                const card = document.createElement('div');
+                card.classList.add('card', 'h-100', 'text-center');
+
+                const cardBody = document.createElement('div');
+                cardBody.classList.add('card-body');
+
+                const icon = document.createElement('i');
+                icon.classList.add('bi', item.icon, 'fs-1', 'mb-3', 'text-warning');
+
+                const title = document.createElement('h5');
+                title.classList.add('card-title');
+                title.textContent = item.key;
+
+                const text = document.createElement('p');
+                text.classList.add('card-text');
+                text.textContent = job[item.key];
+
+                cardBody.appendChild(icon);
+                cardBody.appendChild(title);
+                cardBody.appendChild(text);
+
+                card.appendChild(cardBody);
+                col.appendChild(card);
+                row.appendChild(col);
+            });
+
+            // Bevezető Card
+            const bevezetoCol = document.createElement('div');
+            bevezetoCol.classList.add('col-md-4', 'col-sm-6');
+
+            const bevezetoCard = document.createElement('div');
+            bevezetoCard.classList.add('card', 'h-100', 'text-center', 'position-relative');
+
+            const bevezetoCardBody = document.createElement('div');
+            bevezetoCardBody.classList.add('card-body');
+
+            const bevezetoIcon = document.createElement('i');
+            bevezetoIcon.classList.add('bi', 'bi-info-circle', 'fs-1', 'mb-3', 'text-warning');
+
+            const bevezetoTitle = document.createElement('h5');
+            bevezetoTitle.classList.add('card-title');
+            bevezetoTitle.textContent = 'Bevezető';
+
+            const bevezetoText = document.createElement('p');
+            bevezetoText.classList.add('card-text');
+            const bevezetoShort = job['Bevezető'].split('. ')[0] + '...';
+            bevezetoText.textContent = bevezetoShort;
+
+            // Magnifying Glass Icon
+            const expandButton = document.createElement('button');
+            expandButton.classList.add('expand-icon');
+            expandButton.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
+            expandButton.addEventListener('click', () => {
+                const modalTitle = document.querySelector('#bevezetoModal .modal-title');
+                const modalBody = document.querySelector('#bevezetoModal .modal-body');
+                modalTitle.textContent = 'Bevezető';
+                modalBody.textContent = job['Bevezető'];
+                const bevezetoModalElement = document.getElementById('bevezetoModal');
+                const bevezetoModal = new bootstrap.Modal(bevezetoModalElement);
+                bevezetoModal.show();
+            });
+
+            bevezetoCardBody.appendChild(bevezetoIcon);
+            bevezetoCardBody.appendChild(bevezetoTitle);
+            bevezetoCardBody.appendChild(bevezetoText);
+
+            bevezetoCard.appendChild(bevezetoCardBody);
+            bevezetoCard.appendChild(expandButton);
+            bevezetoCol.appendChild(bevezetoCard);
+            row.appendChild(bevezetoCol);
+
+            // Részletek Card
+            const reszletekCol = document.createElement('div');
+            reszletekCol.classList.add('col-md-4', 'col-sm-6');
+
+            const reszletekCard = document.createElement('div');
+            reszletekCard.classList.add('card', 'h-100', 'text-center', 'position-relative');
+
+            const reszletekCardBody = document.createElement('div');
+            reszletekCardBody.classList.add('card-body');
+
+            const reszletekIcon = document.createElement('i');
+            reszletekIcon.classList.add('bi', 'bi-card-text', 'fs-1', 'mb-3', 'text-warning');
+
+            const reszletekTitle = document.createElement('h5');
+            reszletekTitle.classList.add('card-title');
+            reszletekTitle.textContent = 'További részletek';
+
+            const reszletekText = document.createElement('p');
+            reszletekText.classList.add('card-text');
+            reszletekText.textContent = 'A részletekért kattints ide...';
+
+            // Magnifying Glass Icon
+            const reszletekExpandButton = document.createElement('button');
+            reszletekExpandButton.classList.add('expand-icon');
+            reszletekExpandButton.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
+            reszletekExpandButton.addEventListener('click', () => {
+                const leirasContent = document.getElementById('leirasContent');
+                if (leirasContent) {
+                    leirasContent.textContent = job['Bevezető'];
+                }
+
+                const feladatok = JSON.parse(job['Elvárások (tömb)']);
+                const elonytJelent = JSON.parse(job['Előnyt jelent (tömb)']);
+                const ertekajanlat = JSON.parse(job['Értékajánlat (tömb)']);
+
+                const modalBody = document.querySelector('#reszletekModal .modal-body');
+                modalBody.innerHTML = '';
+
+                // Leírás
+                const leirasTitle = document.createElement('h5');
+                leirasTitle.textContent = 'Leírás';
+                const leirasPara = document.createElement('p');
+                leirasPara.textContent = job['Bevezető'];
+                modalBody.appendChild(leirasTitle);
+                modalBody.appendChild(leirasPara);
+
+                // Amit kérünk
+                const feladatokTitle = document.createElement('h5');
+                feladatokTitle.textContent = 'Amit kérünk';
+                const feladatokList = document.createElement('ul');
+                feladatok.forEach(item => {
+                    const li = document.createElement('li');
+                    li.classList.add('green-check');
+                    li.innerHTML = '<i class="bi bi-check-circle"></i>' + item;
+                    feladatokList.appendChild(li);
+                });
+                modalBody.appendChild(feladatokTitle);
+                modalBody.appendChild(feladatokList);
+
+                // Előnyt jelent
+                if (elonytJelent && elonytJelent.length > 0) {
+                    const elonyTitle = document.createElement('h5');
+                    elonyTitle.textContent = 'Előnyt jelent';
+                    const elonyList = document.createElement('ul');
+                    elonytJelent.forEach(item => {
+                        const li = document.createElement('li');
+                        li.classList.add('gray-check');
+                        li.innerHTML = '<i class="bi bi-check-circle"></i>' + item;
+                        elonyList.appendChild(li);
+                    });
+                    modalBody.appendChild(elonyTitle);
+                    modalBody.appendChild(elonyList);
+                }
+
+                // Értékajánlat
+                if (ertekajanlat && ertekajanlat.length > 0) {
+                    const ertekTitle = document.createElement('h5');
+                    ertekTitle.textContent = 'Értékajánlat';
+                    const ertekList = document.createElement('ul');
+                    ertekajanlat.forEach(item => {
+                        const li = document.createElement('li');
+                        li.classList.add('yellow-plus');
+                        li.innerHTML = '<i class="bi bi-plus-circle"></i>' + item;
+                        ertekList.appendChild(li);
+                    });
+                    modalBody.appendChild(ertekTitle);
+                    modalBody.appendChild(ertekList);
+                }
+
+                const reszletekModalElement = document.getElementById('reszletekModal');
+                const reszletekModal = new bootstrap.Modal(reszletekModalElement);
+                reszletekModal.show();
+            });
+
+            reszletekCardBody.appendChild(reszletekIcon);
+            reszletekCardBody.appendChild(reszletekTitle);
+            reszletekCardBody.appendChild(reszletekText);
+
+            reszletekCard.appendChild(reszletekCardBody);
+            reszletekCard.appendChild(reszletekExpandButton);
+            reszletekCol.appendChild(reszletekCard);
+            row.appendChild(reszletekCol);
+
+            jobDetails.appendChild(row);
+        }
+
+        // Image Gallery
+        const imageGallery = document.getElementById('imageGallery');
+
+        function displayImageGallery(job) {
+            imageGallery.innerHTML = '';
+
+            const row = document.createElement('div');
+            row.classList.add('row', 'gy-4');
+
+            job['imageURLs'].forEach(url => {
+                const col = document.createElement('div');
+                col.classList.add('col-lg-4', 'col-md-6', 'col-sm-12');
+
+                const card = document.createElement('div');
+                card.classList.add('card', 'position-relative', 'h-100');
+
+                const img = document.createElement('img');
+                img.src = url;
+                img.classList.add('img-fluid', 'w-100', 'h-100', 'object-fit-cover');
+
+                // Download Icon
+                const downloadButton = document.createElement('a');
+                downloadButton.classList.add('icon-button', 'position-absolute', 'top-0', 'end-0', 'm-2');
+                downloadButton.innerHTML = '<i class="bi bi-download"></i>';
+                downloadButton.href = url;
+                downloadButton.download = '';
+                downloadButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    fetch(url)
+                        .then(response => response.blob())
+                        .then(blob => {
+                            const blobUrl = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.style.display = 'none';
+                            a.href = blobUrl;
+                            a.download = 'image.jpg';
+                            document.body.appendChild(a);
+                            a.click();
+                            window.URL.revokeObjectURL(blobUrl);
+                        });
+                });
+
+                card.appendChild(img);
+                card.appendChild(downloadButton);
+                col.appendChild(card);
+                row.appendChild(col);
+            });
+
+            imageGallery.appendChild(row);
+        }
+
+        // Text Content
+        const textContent = document.getElementById('textContent');
+
+        function displayTextContent(job) {
+            textContent.innerHTML = '';
+
+            const row = document.createElement('div');
+            row.classList.add('row', 'gy-4');
+
+            job['multilineTexts'].forEach(text => {
+                const col = document.createElement('div');
+                col.classList.add('col-lg-4', 'col-md-6', 'col-sm-12');
+
+                const card = document.createElement('div');
+                card.classList.add('card', 'h-100', 'position-relative');
+
+                const cardBody = document.createElement('div');
+                cardBody.classList.add('card-body');
+
+                cardBody.innerHTML = `<p class="card-text">${text.replace(/\n/g, '<br>')}</p>`;
+
+                // Copy Icon
+                const copyButton = document.createElement('button');
+                copyButton.classList.add('icon-button', 'position-absolute', 'top-0', 'end-0', 'm-2');
+                copyButton.innerHTML = '<i class="bi bi-clipboard"></i>';
+                copyButton.addEventListener('click', () => {
+                    navigator.clipboard.writeText(text).then(() => {
+                        showToast('Szöveg másolva a vágólapra.');
+                    });
+                });
+
+                card.appendChild(cardBody);
+                card.appendChild(copyButton);
+                col.appendChild(card);
+                row.appendChild(col);
+            });
+
+            textContent.appendChild(row);
+        }
+
+        // Toast Message
+        function showToast(message) {
+            const toastElement = document.getElementById('toastMessage');
+            const toastBody = toastElement.querySelector('.toast-body');
+            toastBody.textContent = message;
+            const toast = new bootstrap.Toast(toastElement, { delay: 2000 });
+            toast.show();
+        }
+
+        // Display Analysis Section
+        function displayAnalysis(job) {
+            // Generate statistic cards
+            generateStatCards(job);
+
+            // Generate chart
+            generateChart(job);
+        }
+
+        function generateStatCards(job) {
+            const statCards = document.getElementById('statCards');
+            statCards.innerHTML = '';
+
+            const additionalData = job.additionalData;
+
+            let totalVisitors = 0;
+            let totalApplicants = 0;
+
+            for (const source in additionalData) {
+                for (const medium in additionalData[source]) {
+                    const dataPoint = additionalData[source][medium];
+                    totalVisitors += dataPoint.v;
+                    totalApplicants += dataPoint.a;
+                }
+            }
+
+            const conversionRate = totalVisitors > 0 ? ((totalApplicants / totalVisitors) * 100).toFixed(2) : 0;
+
+            const stats = [
+                { title: 'Összes látogató', value: totalVisitors },
+                { title: 'Összes jelentkező', value: totalApplicants },
+                { title: 'Átlagos konverziós arány', value: conversionRate + '%' }
+            ];
+
+            stats.forEach(stat => {
+                const col = document.createElement('div');
+                col.classList.add('col-md-4');
+
+                const card = document.createElement('div');
+                card.classList.add('stat-card');
+
+                const h3 = document.createElement('h3');
+                h3.textContent = stat.value;
+
+                const p = document.createElement('p');
+                p.textContent = stat.title;
+
+                card.appendChild(h3);
+                card.appendChild(p);
+                col.appendChild(card);
+                statCards.appendChild(col);
+            });
+        }
+
+        function generateChart(job) {
+            const ctx = document.getElementById('myChart').getContext('2d');
+
+            const additionalData = job.additionalData;
+
+            const labels = [];
+            const conversionRates = [];
+
+            // Collect sources and their data
+            const sourcesData = {};
+
+            for (const source in additionalData) {
+                let sourceHasData = false;
+                const sourceData = {
+                    visitors: {},
+                    applicants: {}
+                };
+
+                for (const medium in additionalData[source]) {
+                    const dataPoint = additionalData[source][medium];
+                    if (dataPoint.v > 0 || dataPoint.a > 0) {
+                        sourceHasData = true;
+                        sourceData.visitors[medium] = dataPoint.v;
+                        sourceData.applicants[medium] = dataPoint.a;
+                    }
+                }
+
+                if (sourceHasData) {
+                    sourcesData[source] = sourceData;
+                }
+            }
+
+            // Calculate total applicants for sorting
+            const sourcesTotalApplicants = [];
+
+            for (const source in sourcesData) {
+                let totalApplicants = 0;
+                for (const medium in sourcesData[source].applicants) {
+                    totalApplicants += sourcesData[source].applicants[medium];
+                }
+                sourcesTotalApplicants.push({ source, totalApplicants });
+            }
+
+            // Sort by descending total applicants
+            sourcesTotalApplicants.sort((a, b) => b.totalApplicants - a.totalApplicants);
+
+            // Sorted labels and data
+            const sortedLabels = [];
+            const sortedSourcesData = {};
+
+            sourcesTotalApplicants.forEach(item => {
+                const source = item.source;
+                sortedLabels.push(source.charAt(0).toUpperCase() + source.slice(1));
+                sortedSourcesData[source] = sourcesData[source];
+            });
+
+            // Prepare mediums list
+            const mediumsSet = new Set();
+            for (const source in sortedSourcesData) {
+                for (const medium in sortedSourcesData[source].visitors) {
+                    mediumsSet.add(medium);
+                }
+            }
+            const mediums = Array.from(mediumsSet);
+
+            // Initialize datasets
+            const visitorsDatasets = [];
+            const applicantsDatasets = [];
+
+            const baseColor = '#f0b323';
+
+            // Prepare data per medium
+            mediums.forEach((medium, index) => {
+                const visitorsData = [];
+                const applicantsData = [];
+
+                sortedLabels.forEach(label => {
+                    const sourceKey = label.toLowerCase();
+                    const visitorValue = sortedSourcesData[sourceKey] && sortedSourcesData[sourceKey].visitors[medium] ? sortedSourcesData[sourceKey].visitors[medium] : 0;
+                    const applicantValue = sortedSourcesData[sourceKey] && sortedSourcesData[sourceKey].applicants[medium] ? sortedSourcesData[sourceKey].applicants[medium] : 0;
+                    visitorsData.push(visitorValue);
+                    applicantsData.push(applicantValue);
+                });
+
+                // Calculate shade percentage
+                const shadePercent = index * -10;
+
+                // Add datasets if there are non-zero values
+                if (visitorsData.some(value => value > 0)) {
+                    visitorsDatasets.push({
+                        label: `Látogatók - ${medium}`,
+                        data: visitorsData,
+                        backgroundColor: shadeColor(baseColor, shadePercent),
+                        stack: 'Visitors',
+                        type: 'bar'
+                    });
+                }
+
+                if (applicantsData.some(value => value > 0)) {
+                    applicantsDatasets.push({
+                        label: `Jelentkezők - ${medium}`,
+                        data: applicantsData,
+                        backgroundColor: shadeColor(baseColor, shadePercent - 20),
+                        stack: 'Applicants',
+                        type: 'bar'
+                    });
+                }
+            });
+
+            // Calculate conversion rates
+            sortedLabels.forEach(label => {
+                const sourceKey = label.toLowerCase();
+                let totalVisitors = 0;
+                let totalApplicants = 0;
+
+                for (const medium in sortedSourcesData[sourceKey].visitors) {
+                    totalVisitors += sortedSourcesData[sourceKey].visitors[medium] || 0;
+                }
+
+                for (const medium in sortedSourcesData[sourceKey].applicants) {
+                    totalApplicants += sortedSourcesData[sourceKey].applicants[medium] || 0;
+                }
+
+                const conversionRate = totalVisitors > 0 ? (totalApplicants / totalVisitors) * 100 : 0;
+                conversionRates.push(conversionRate.toFixed(2));
+            });
+
+            // Destroy existing chart if exists
+            if (window.myChart instanceof Chart) {
+                window.myChart.destroy();
+            }
+
+            window.myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sortedLabels,
+                    datasets: [
+                        ...visitorsDatasets,
+                        ...applicantsDatasets,
+                        {
+                            label: 'Konverziós arány (%)',
+                            data: conversionRates,
+                            type: 'line',
+                            fill: false,
+                            borderColor: '#333333',
+                            backgroundColor: '#333333',
+                            yAxisID: 'y1',
+                            tension: 0.1,
+                            pointBackgroundColor: '#333333',
+                            pointBorderColor: '#333333'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function (context) {
+                                    let label = context.dataset.label || '';
+                                    let value = context.parsed.y;
+
+                                    // Ignore zero values in tooltip
+                                    if (value === 0) {
+                                        return null;
+                                    }
+
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += value;
+
+                                    // Add percentage symbol for conversion rate
+                                    if (context.dataset.label === 'Konverziós arány (%)') {
+                                        label += '%';
+                                    }
+
+                                    return label;
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true
+                        },
+                        y: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Darabszám'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            grid: {
+                                drawOnChartArea: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Konverziós arány (%)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Utility function to shade color
+        function shadeColor(color, percent) {
+            let f = parseInt(color.slice(1), 16),
+                t = percent < 0 ? 0 : 255,
+                p = percent < 0 ? percent * -1 : percent,
+                R = f >> 16,
+                G = (f >> 8) & 0x00FF,
+                B = f & 0x0000FF;
+            return "#" + (
+                0x1000000 +
+                (Math.round((t - R) * p / 100) + R) * 0x10000 +
+                (Math.round((t - G) * p / 100) + G) * 0x100 +
+                (Math.round((t - B) * p / 100) + B)
+            ).toString(16).slice(1);
+        }
+
+        // Initial setup
+        populateJobDropdown();
+        jobSelector.textContent = currentJob['Pozíció neve']; // Show only the job name
+        displayJobDetails(currentJob);
+        displayImageGallery(currentJob);
+        displayTextContent(currentJob);
+        displayAnalysis(currentJob);
+    });
+</script>
+
+</body>
+</html>
