@@ -463,9 +463,15 @@
     .social-card-header {
         padding: 12px;
         display: flex;
+        justify-content: space-between;
         align-items: center;
         background-color: #f0b323;
         color: white;
+    }
+
+    .social-card-logo-title {
+        display: flex;
+        align-items: center;
     }
 
     .social-card-logo {
@@ -479,6 +485,13 @@
     .social-card-title {
         font-weight: bold;
         margin: 0;
+    }
+
+    .social-card-copy-btn {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
     }
 
     .social-card-body {
@@ -1029,18 +1042,34 @@
             card.classList.add('social-card', `${platform}-card`);
 
             const cardHeader = document.createElement('div');
-            cardHeader.classList.add('social-card-header');
+            cardHeader.classList.add('social-card-header', 'd-flex', 'justify-content-between', 'align-items-center');
+
+            const logoAndTitle = document.createElement('div');
+            logoAndTitle.classList.add('d-flex', 'align-items-center');
 
             const logo = document.createElement('div');
             logo.classList.add('social-card-logo');
             logo.innerHTML = socialIcons[platform];
 
             const title = document.createElement('h5');
-            title.classList.add('social-card-title');
+            title.classList.add('social-card-title', 'mb-0', 'ms-2');
             title.textContent = platform.charAt(0).toUpperCase() + platform.slice(1);
 
-            cardHeader.appendChild(logo);
-            cardHeader.appendChild(title);
+            logoAndTitle.appendChild(logo);
+            logoAndTitle.appendChild(title);
+
+            // Másolás ikon
+            const copyButton = document.createElement('button');
+            copyButton.classList.add('btn', 'btn-sm', 'btn-outline-light');
+            copyButton.innerHTML = '<i class="bi bi-clipboard"></i>';
+            copyButton.addEventListener('click', () => {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('Szöveg másolva a vágólapra.');
+                });
+            });
+
+            cardHeader.appendChild(logoAndTitle);
+            cardHeader.appendChild(copyButton);
 
             const cardBody = document.createElement('div');
             cardBody.classList.add('social-card-body');
@@ -1051,19 +1080,8 @@
 
             cardBody.appendChild(cardText);
 
-            // Másolás ikon
-            const copyButton = document.createElement('button');
-            copyButton.classList.add('icon-button', 'position-absolute', 'top-0', 'end-0', 'm-2');
-            copyButton.innerHTML = '<i class="bi bi-clipboard"></i>';
-            copyButton.addEventListener('click', () => {
-                navigator.clipboard.writeText(text).then(() => {
-                    showToast('Szöveg másolva a vágólapra.');
-                });
-            });
-
             card.appendChild(cardHeader);
             card.appendChild(cardBody);
-            card.appendChild(copyButton);
             col.appendChild(card);
             row.appendChild(col);
         });
