@@ -246,7 +246,27 @@
         }
 
         section {
-            padding: 40px 0;
+            padding: 5% 0;
+        }
+
+        /* Improved Statistic Cards for smaller screens */
+        #analysisSection .stat-cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(45%, 1fr));
+            gap: 2%;
+        }
+
+        #analysisSection .stat-card {
+            width: 100%;
+            font-size: 0.9rem;
+        }
+
+        #analysisSection .stat-card h3 {
+            font-size: 1.2rem;
+        }
+
+        #analysisSection .stat-card p {
+            font-size: 0.8rem;
         }
     }
 
@@ -261,7 +281,7 @@
         }
         
         .card {
-            margin-bottom: 15px;
+            margin-bottom: 4%;
         }
 
         .section-title h2 {
@@ -273,7 +293,7 @@
         }
 
         .card-body {
-            padding: 10px;
+            padding: 3%;
         }
 
         .card-title {
@@ -285,7 +305,7 @@
         }
 
         section {
-            padding: 30px 0;
+            padding: 4% 0;
             min-height: auto;
         }
 
@@ -299,6 +319,55 @@
 
         .nav-dots {
             display: none;
+        }
+
+        /* Jobdetails boxok elrendezése mobilon */
+        #jobDetailsSection .row {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        #jobDetailsSection .col-md-4 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+
+        #jobDetailsSection .col-md-4:last-child {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+        /* Improved Statistic Cards for smaller screens */
+        #analysisSection .stat-cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(45%, 1fr));
+            gap: 2%;
+        }
+
+        #analysisSection .stat-card {
+            width: 100%;
+            font-size: 0.8rem;
+        }
+
+        #analysisSection .stat-card h3 {
+            font-size: 1rem;
+        }
+
+        #analysisSection .stat-card p {
+            font-size: 0.7rem;
+        }
+
+        /* Improved Chart for smaller screens */
+        #chartContainer {
+            height: 70vh;
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        #myChart {
+            min-width: 100%;
+            height: 100%;
         }
     }
 
@@ -320,11 +389,11 @@
         }
 
         .card {
-            margin-bottom: 10px;
+            margin-bottom: 3%;
         }
 
         .card-body {
-            padding: 8px;
+            padding: 2%;
         }
 
         .card-title {
@@ -348,8 +417,41 @@
         }
 
         section {
-            padding: 20px 0;
+            padding: 3% 0;
             min-height: auto;
+        }
+
+        /* Improved Statistic Cards for smaller screens */
+        #analysisSection .stat-cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(45%, 1fr));
+            gap: 2%;
+        }
+
+        #analysisSection .stat-card {
+            width: 100%;
+            font-size: 0.7rem;
+        }
+
+        #analysisSection .stat-card h3 {
+            font-size: 0.9rem;
+        }
+
+        #analysisSection .stat-card p {
+            font-size: 0.6rem;
+        }
+
+        /* Improved Chart for smaller screens */
+        #chartContainer {
+            height: 60vh;
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        #myChart {
+            min-width: 100%;
+            height: 100%;
         }
     }
 
@@ -381,7 +483,7 @@
     /* Navigation Dots */
     .nav-dots {
         position: fixed;
-        right: 10px;
+        right: 2%;
         top: 50%;
         transform: translateY(-50%);
         z-index: 1000;
@@ -405,8 +507,8 @@
     /* Toast message */
     .toast {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
+        bottom: 5%;
+        right: 5%;
         background-color: #333;
         color: #fff;
         padding: 10px 20px;
@@ -423,7 +525,7 @@
     /* Statistic Cards */
     .stat-card {
         text-align: center;
-        padding: 20px;
+        padding: 5%;
         color: #333;
         border-radius: 15px;
         background-color: #ffffff;
@@ -432,7 +534,7 @@
 
     .stat-card h3 {
         font-size: 2rem;
-        margin-bottom: 10px;
+        margin-bottom: 5%;
         color: #f0b323;
     }
 
@@ -440,6 +542,13 @@
         font-size: 1.2rem;
         margin: 0;
         color: #555;
+    }
+
+    /* Statisztika kártyák konténer */
+    .stat-cards-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
     }
 
     /* Chart Container */
@@ -453,7 +562,7 @@
     .social-card {
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        margin-bottom: 20px;
+        margin-bottom: 5%;
         overflow: hidden;
         height: 100%;
         display: flex;
@@ -461,7 +570,7 @@
     }
 
     .social-card-header {
-        padding: 12px;
+        padding: 3%;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -478,7 +587,7 @@
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        margin-right: 10px;
+        margin-right: 3%;
         filter: brightness(0) invert(1);
     }
 
@@ -495,7 +604,7 @@
     }
 
     .social-card-body {
-        padding: 12px;
+        padding: 3%;
         flex-grow: 1;
         display: flex;
         flex-direction: column;
@@ -524,7 +633,7 @@
 </style>
 </head>
 <body>
-
+    
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg" id="navbar">
     <div class="container">
@@ -628,7 +737,7 @@
         </div>
 
         <!-- Chart -->
-        <div id="chartContainer">
+        <div class="chart-container" style="position: relative; height: 60vh; width: 100%;">
             <canvas id="myChart"></canvas>
         </div>
     </div>
@@ -637,32 +746,36 @@
 <!-- Modals -->
 <!-- Bevezető Modal -->
 <div class="modal fade" id="bevezetoModal" tabindex="-1" aria-labelledby="bevezetoModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Bevezető</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Bezárás"></button>
-      </div>
-      <div class="modal-body">
-        <!-- Bevezető teljes szövege -->
-      </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bevezetoModalLabel">Bevezető</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="color: #6c757d;">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Modal tartalom -->
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- Részletek Modal -->
 <div class="modal fade" id="reszletekModal" tabindex="-1" aria-labelledby="reszletekModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Részletes információk</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Bezárás"></button>
-      </div>
-      <div class="modal-body">
-        <!-- Modal content will be populated dynamically -->
-      </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reszletekModalLabel">Részletek</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="color: #6c757d;">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Modal tartalom -->
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- Toast üzenet -->
@@ -1025,7 +1138,7 @@
         const row = document.createElement('div');
         row.classList.add('row', 'gy-4');
 
-        const socialPlatforms = ['facebook', 'instagram', 'linkedin'];
+        const socialPlatforms = ['instagram', 'facebook', 'linkedin'];
 
         const socialIcons = {
             facebook: '<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Facebook</title><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg>',
@@ -1308,6 +1421,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         tooltip: {
                             mode: 'index',
@@ -1317,7 +1431,6 @@
                                     let label = context.dataset.label || '';
                                     let value = context.parsed.y;
 
-                                    // Ignore zero values in tooltip
                                     if (value === 0) {
                                         return null;
                                     }
@@ -1327,7 +1440,6 @@
                                     }
                                     label += value;
 
-                                    // Add percentage symbol for conversion rate
                                     if (context.dataset.label === 'Konverziós arány (%)') {
                                         label += '%';
                                     }
@@ -1391,6 +1503,10 @@
         displayImageGallery(currentJob);
         displayTextContent(currentJob);
         displayAnalysis(currentJob);
+
+        // Ensure stat cards are displayed side by side on mobile
+        const statCards = document.getElementById('statCards');
+        statCards.classList.add('d-flex', 'flex-wrap', 'justify-content-between');
     });
 </script>
 
