@@ -1052,10 +1052,10 @@
                 col.classList.add('col-md-4', 'col-sm-6');
 
                 const card = document.createElement('div');
-                card.classList.add('card', 'h-100', 'text-center');
+                card.classList.add('card', 'h-100', 'text-center', 'd-flex', 'align-items-center'); // Hozzáadtuk a d-flex és align-items-center osztályokat
 
                 const cardBody = document.createElement('div');
-                cardBody.classList.add('card-body');
+                cardBody.classList.add('card-body', 'd-flex', 'flex-column', 'justify-content-center', 'w-100'); // Hozzáadtuk a d-flex, flex-column, justify-content-center és w-100 osztályokat
 
                 const icon = document.createElement('i');
                 icon.classList.add('bi', item.icon, 'fs-1', 'mb-3', 'text-warning');
@@ -1082,10 +1082,10 @@
             bevezetoCol.classList.add('col-md-4', 'col-sm-6');
 
             const bevezetoCard = document.createElement('div');
-            bevezetoCard.classList.add('card', 'h-100', 'text-center', 'position-relative');
+            bevezetoCard.classList.add('card', 'h-100', 'text-center', 'position-relative', 'd-flex', 'align-items-center'); // Hozzáadtuk a d-flex és align-items-center osztályokat
 
             const bevezetoCardBody = document.createElement('div');
-            bevezetoCardBody.classList.add('card-body');
+            bevezetoCardBody.classList.add('card-body', 'd-flex', 'flex-column', 'justify-content-center', 'w-100'); // Hozzáadtuk a d-flex, flex-column, justify-content-center és w-100 osztályokat
 
             const bevezetoIcon = document.createElement('i');
             bevezetoIcon.classList.add('bi', 'bi-info-circle', 'fs-1', 'mb-3', 'text-warning');
@@ -1127,13 +1127,13 @@
             reszletekCol.classList.add('col-md-4', 'col-sm-6');
 
             const reszletekCard = document.createElement('div');
-            reszletekCard.classList.add('card', 'h-100', 'text-center', 'position-relative');
+            reszletekCard.classList.add('card', 'h-100', 'text-center', 'position-relative', 'd-flex', 'align-items-center'); // Hozzáadtuk a d-flex és align-items-center osztályokat
 
             const reszletekCardBody = document.createElement('div');
-            reszletekCardBody.classList.add('card-body');
+            reszletekCardBody.classList.add('card-body', 'd-flex', 'flex-column', 'justify-content-center', 'w-100'); // Hozzáadtuk a d-flex, flex-column, justify-content-center és w-100 osztályokat
 
             const reszletekIcon = document.createElement('i');
-            reszletekIcon.classList.add('bi', 'bi-card-text', 'fs-1', 'mb-3', 'text-warning');
+            reszletekIcon.classList.add('bi', 'bi-card-text', 'fs-1', 'mb-3', 'text-warning');  
 
             const reszletekTitle = document.createElement('h5');
             reszletekTitle.classList.add('card-title');
