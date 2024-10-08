@@ -661,6 +661,56 @@
             margin: 1.75rem auto;
         }
     }
+
+    
+    /* Loading animáció */
+    .loader-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .loader {
+        width: 60px;
+        aspect-ratio: 1;
+        color: #f0b323;
+        background:
+            linear-gradient(currentColor 0 0) 100%  0,
+            linear-gradient(currentColor 0 0) 0  100%;
+        background-size: 50.1% 50.1%;
+        background-repeat: no-repeat;
+        animation:  l7-0 1s infinite steps(1);
+    }
+    .loader::before,
+    .loader::after {
+        content:"";
+        position: absolute;
+        inset: 0 50% 50% 0;
+        background: currentColor;
+        transform: scale(var(--s,1)) perspective(150px) rotateY(0deg);
+        transform-origin: bottom right; 
+        animation: l7-1 .5s infinite linear alternate;
+    }
+    .loader::after {
+        --s:-1,-1;
+    }
+    @keyframes l7-0 {
+        0%  {transform: scaleX(1)  rotate(0deg)}
+        50% {transform: scaleX(-1) rotate(-90deg)}
+    }
+    @keyframes l7-1 {
+        49.99% {transform:scale(var(--s,1)) perspective(150px) rotateX(-90deg) ;filter:grayscale(0)}
+        50%    {transform:scale(var(--s,1)) perspective(150px) rotateX(-90deg) ;filter:grayscale(0.8)}
+        100%   {transform:scale(var(--s,1)) perspective(150px) rotateX(-180deg);filter:grayscale(0.8)}
+    }
+
 </style>
 </head>
 <body>
@@ -705,6 +755,8 @@
     <div class="nav-dot" data-section="textSection"></div>
     <div class="nav-dot" data-section="analysisSection"></div>
 </div>
+
+
 
 <!-- Sections -->
 <section id="jobDetailsSection">
@@ -828,6 +880,11 @@
 <!-- Bootstrap JS and dependencies -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- Loader container -->
+<div id="loaderContainer" class="loader-container" style="display: none;">
+    <div class="loader"></div>
+</div>
+
 <!-- JavaScript Logic -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -892,6 +949,10 @@
                 backdrop: 'static',
                 keyboard: false
             });
+            
+            // Azonnal megjelenítjük a modalt az oldal betöltésekor
+            jobSelectorModal.show();
+
             document.querySelector('.btn[data-bs-target="#jobSelectorModal"]').addEventListener('click', () => {
                 jobSelectorModal.show();
             });
@@ -915,11 +976,25 @@
                     currentJob = job;
                     const jobSelectorModal = bootstrap.Modal.getInstance(document.getElementById('jobSelectorModal'));
                     jobSelectorModal.hide();
-                    document.querySelector('.btn[data-bs-target="#jobSelectorModal"]').textContent = job['Pozíció neve'];
-                    displayJobDetails(currentJob);
-                    displayImageGallery(currentJob);
-                    displayTextContent(currentJob);
-                    displayAnalysis(currentJob);
+                    
+                    // Töltő animáció megjelenítése
+                    const loaderContainer = document.getElementById('loaderContainer');
+                    loaderContainer.style.display = 'flex';
+                    
+                    // Az oldal tartalmának elrejtése
+                    document.body.style.visibility = 'hidden';
+                    loaderContainer.style.visibility = 'visible';
+                    
+                    // 3 másodperc késleltetés
+                    setTimeout(() => {
+                        loaderContainer.style.display = 'none';
+                        document.body.style.visibility = 'visible';
+                        document.querySelector('.btn[data-bs-target="#jobSelectorModal"]').textContent = job['Pozíció neve'];
+                        displayJobDetails(currentJob);
+                        displayImageGallery(currentJob);
+                        displayTextContent(currentJob);
+                        displayAnalysis(currentJob);
+                    }, 3000);
                 });
                 jobList.appendChild(listItem);
             });
