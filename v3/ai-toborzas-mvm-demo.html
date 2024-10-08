@@ -855,17 +855,20 @@
 </div>
 
 
-<!-- Job Selector Modal -->
-<div class="modal fade" id="jobSelectorModal" tabindex="-1" aria-labelledby="jobSelectorModalLabel" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered">
+<!-- Modal a munkakör választáshoz -->
+<div class="modal fade" id="jobSelectorModal" tabindex="-1" aria-labelledby="jobSelectorModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="jobSelectorModalLabel">Állás kiválasztása</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="jobSelectorModalLabel">Válassz munkakört</h5>
             </div>
             <div class="modal-body">
+                <!-- Kereső mező hozzáadása -->
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="jobSearch" placeholder="Keresés munkakörök között...">
+                </div>
                 <ul class="list-group" id="jobList">
-                    <!-- Options will be populated by JavaScript -->
+                    <!-- A munkakörök listája ide kerül -->
                 </ul>
             </div>
         </div>
@@ -925,23 +928,25 @@
             })
             .addTo(controller);
         });
-        // Smooth Scroll to Sections with Animation
-        document.querySelectorAll('a.nav-link, .nav-dot').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href') || `#${this.dataset.section}`;
-                const targetElement = document.querySelector(targetId);
-                
-                gsap.to(window, {
-                    duration: 1.0,
-                    scrollTo: {
-                        y: targetElement.offsetTop - 60, // Offset for fixed navbar
-                        autoKill: false
-                    },
-                    ease: "power4.inOut"
+        
+
+            // Smooth Scroll to Sections with Animation
+            document.querySelectorAll('a.nav-link, .nav-dot').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href') || `#${this.dataset.section}`;
+                    const targetElement = document.querySelector(targetId);
+                    
+                    gsap.to(window, {
+                        duration: 0.1, // Csökkentettük az időtartamot 1.0-ról 0.5-re
+                        scrollTo: {
+                            y: targetElement.offsetTop - 60, // Offset for fixed navbar
+                            autoKill: false
+                        },
+                        ease: "power2.inOut" // Megváltoztattuk az ease-t a gyorsabb mozgás érdekében
+                    });
                 });
             });
-        });
 
         // Munkakör Modal Inicializációja
         function initializeJobModal() {
@@ -959,7 +964,7 @@
         }
 
         // Munkakörök Listájának Feltöltése a Modalba
-        function populateJobList() {
+        function populateJobList(searchTerm = '') {
             const jobList = document.getElementById('jobList');
             if (!jobList) {
                 console.error('Element with id "jobList" not found.');
@@ -967,7 +972,11 @@
             }
             jobList.innerHTML = '';
 
-            jobs.forEach((job, index) => {
+            const filteredJobs = jobs.filter(job => 
+                job['Pozíció neve'].toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            filteredJobs.forEach((job, index) => {
                 const listItem = document.createElement('li');
                 listItem.classList.add('list-group-item', 'list-group-item-action');
                 listItem.textContent = job['Pozíció neve'];
@@ -998,7 +1007,20 @@
                 });
                 jobList.appendChild(listItem);
             });
+
+            if (filteredJobs.length === 0) {
+                const noResult = document.createElement('li');
+                noResult.classList.add('list-group-item');
+                noResult.textContent = 'Nincs találat';
+                jobList.appendChild(noResult);
+            }
         }
+
+        // Kereső funkció hozzáadása
+        const jobSearch = document.getElementById('jobSearch');
+        jobSearch.addEventListener('input', function() {
+            populateJobList(this.value);
+        });
 
         // Display Job Details
         const jobDetails = document.getElementById('jobDetails');
