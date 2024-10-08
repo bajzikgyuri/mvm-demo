@@ -711,6 +711,18 @@
         100%   {transform:scale(var(--s,1)) perspective(150px) rotateX(-180deg);filter:grayscale(0.8)}
     }
 
+        /* Typing animation styles */
+        .typing-animation::after {
+        content: '|';
+        animation: blink 0.7s infinite;
+    }
+
+    @keyframes blink {
+        0% { opacity: 1; }
+        50% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+
 </style>
 </head>
 <body>
@@ -855,12 +867,11 @@
 </div>
 
 
-<!-- Modal a munkakör választáshoz -->
 <div class="modal fade" id="jobSelectorModal" tabindex="-1" aria-labelledby="jobSelectorModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="jobSelectorModalLabel">Válassz munkakört</h5>
+            <div class="modal-header justify-content-center">
+                <img src="https://mvm.karrierportal.hu/media/picture/mvm/og-img.jpg" alt="MVM logó" style="height: 40px;">
             </div>
             <div class="modal-body">
                 <!-- Kereső mező hozzáadása -->
@@ -1339,8 +1350,8 @@
             cardBody.classList.add('social-card-body');
 
             const cardText = document.createElement('p');
-            cardText.classList.add('social-card-text');
-            cardText.textContent = text;
+            cardText.classList.add('social-card-text', 'typing-animation');
+            cardText.textContent = '';
 
             cardBody.appendChild(cardText);
 
@@ -1348,10 +1359,24 @@
             card.appendChild(cardBody);
             col.appendChild(card);
             row.appendChild(col);
+
+            // Typing animation
+            let i = 0;
+            const typingSpeed = 10; // milliseconds per character
+            function typeWriter() {
+                if (i < text.length) {
+                    cardText.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, typingSpeed);
+                } else {
+                    cardText.classList.remove('typing-animation');
+                }
+            }
+            setTimeout(typeWriter, 500 * index); // Delay start for each card
         });
 
-        textContent.appendChild(row);
-    }
+            textContent.appendChild(row);
+        }
 
         // Toast Message
         function showToast(message) {
