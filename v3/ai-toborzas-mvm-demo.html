@@ -194,6 +194,8 @@
 
     .modal-content {
         border-radius: 10px;
+        background-color: #ffffff;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     }
 
     /* Bullet Lists in Modal */
@@ -631,16 +633,18 @@
         background-color: #fff;
     }
 
-        /* Teljesen átlátszatlan modal háttér */
-        .modal-backdrop {
+    /* Átlátszó, de nagyon homályos modal háttér */
+    .modal-backdrop {
         opacity: 1 !important;
-        background-color: #ffffff !important;
+        background-color: rgba(0, 0, 0, 0.8) !important;
+        backdrop-filter: blur(15px);
     }
 
     /* Modal stílus módosítások */
     .modal-content {
-        box-shadow: none;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         border: none;
+        background-color: #ffffff;
     }
 
     .modal-dialog {
@@ -1000,6 +1004,9 @@
                     const modal = bootstrap.Modal.getInstance(document.getElementById('jobSelectorModal'));
                     modal.hide();
                     
+                    // Oldal tetejére ugrás
+                    window.scrollTo(0, 0);
+                    
                     // Töltő animáció megjelenítése
                     document.getElementById('loaderContainer').style.display = 'flex';
                     
@@ -1016,8 +1023,17 @@
                 });
                 jobList.appendChild(listItem);
             });
-        }
 
+            // "Több" gomb hozzáadása, ha van több találat
+            if (filteredJobs.length > 5) {
+                const moreButton = document.createElement('li');
+                moreButton.classList.add('list-group-item', 'text-center', 'more-button');
+                moreButton.textContent = 'Több...';
+                moreButton.style.cursor = 'pointer';
+                moreButton.addEventListener('click', () => loadMoreJobs(filteredJobs, 5));
+                jobList.appendChild(moreButton);
+            }
+        }
     // Több munkakör betöltése
     function loadMoreJobs(filteredJobs, startIndex) {
         const jobList = document.getElementById('jobList');
@@ -1041,13 +1057,14 @@
             jobList.appendChild(listItem);
         });
 
+        // Új "Több" gomb hozzáadása, ha van még több találat
         if (startIndex + 5 < filteredJobs.length) {
-            const moreButton = document.createElement('li');
-            moreButton.classList.add('list-group-item', 'text-center', 'more-button');
-            moreButton.textContent = 'Több...';
-            moreButton.style.cursor = 'pointer';
-            moreButton.addEventListener('click', () => loadMoreJobs(filteredJobs, startIndex + 5));
-            jobList.appendChild(moreButton);
+            const newMoreButton = document.createElement('li');
+            newMoreButton.classList.add('list-group-item', 'text-center', 'more-button');
+            newMoreButton.textContent = 'Több...';
+            newMoreButton.style.cursor = 'pointer';
+            newMoreButton.addEventListener('click', () => loadMoreJobs(filteredJobs, startIndex + 5));
+            jobList.appendChild(newMoreButton);
         }
     }
 
