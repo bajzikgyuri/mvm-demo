@@ -576,8 +576,11 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background-color: #f0b323;
-        color: white;
+        background-color: #ffffff;
+        color: #f0b323;
+        border: 2px solid #f0b323;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
     }
 
     .social-card-logo-title {
@@ -590,18 +593,19 @@
         height: 40px;
         border-radius: 50%;
         margin-right: 3%;
-        filter: brightness(0) invert(1);
+        filter: brightness(0) saturate(100%) invert(76%) sepia(38%) saturate(1061%) hue-rotate(359deg) brightness(101%) contrast(94%);
     }
 
     .social-card-title {
         font-weight: bold;
         margin: 0;
+        color: #f0b323;
     }
 
     .social-card-copy-btn {
         background: none;
         border: none;
-        color: white;
+        color: #f0b323;
         cursor: pointer;
     }
 
@@ -617,6 +621,8 @@
         margin: 0;
         white-space: pre-wrap;
     }
+
+    
 
     /* Facebook stílus */
     .facebook-card {
@@ -1394,14 +1400,24 @@ function loadMoreJobs(filteredJobs) {
             const title = document.createElement('h5');
             title.classList.add('social-card-title', 'mb-0', 'ms-2');
             title.textContent = platform.charAt(0).toUpperCase() + platform.slice(1);
-
             logoAndTitle.appendChild(logo);
             logoAndTitle.appendChild(title);
 
             // Másolás ikon
             const copyButton = document.createElement('button');
-            copyButton.classList.add('btn', 'btn-sm', 'btn-outline-light');
+            copyButton.classList.add('btn', 'btn-sm', 'btn-outline-warning');
+            copyButton.style.backgroundColor = 'white';
+            copyButton.style.color = '#f0b323';
             copyButton.innerHTML = '<i class="bi bi-clipboard"></i>';
+            copyButton.style.transition = 'all 0.3s ease';
+            copyButton.addEventListener('mouseover', () => {
+                copyButton.style.backgroundColor = '#f0b323';
+                copyButton.style.color = 'white';
+            });
+            copyButton.addEventListener('mouseout', () => {
+                copyButton.style.backgroundColor = 'white';
+                copyButton.style.color = '#f0b323';
+            });
             copyButton.addEventListener('click', () => {
                 navigator.clipboard.writeText(text).then(() => {
                     showToast('Szöveg másolva a vágólapra.');
@@ -1446,8 +1462,13 @@ function loadMoreJobs(filteredJobs) {
         // Toast Message
         function showToast(message) {
             const toastElement = document.getElementById('toastMessage');
+            toastElement.style.backgroundColor = 'white';
+            toastElement.style.color = 'black';
+            toastElement.style.border = '1px solid white';
             const toastBody = toastElement.querySelector('.toast-body');
             toastBody.textContent = message;
+            toastBody.style.backgroundColor = 'white';
+            toastBody.style.color = 'black';
             const toast = new bootstrap.Toast(toastElement, { delay: 2000 });
             toast.show();
         }
