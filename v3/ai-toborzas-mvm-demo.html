@@ -854,6 +854,11 @@
             <!-- Cards will be populated by JavaScript -->
         </div>
 
+        <!-- Chart Legend Checkboxes -->
+        <div id="chartLegend" class="mb-3">
+            <!-- Checkboxes will be populated by JavaScript -->
+        </div>
+
         <!-- Chart -->
         <div class="chart-container" style="position: relative; height: 60vh; width: 100%;">
             <canvas id="myChart"></canvas>
@@ -1197,13 +1202,13 @@ function loadMoreJobs(filteredJobs) {
             reszletekCol.classList.add('col-md-4', 'col-sm-6');
 
             const reszletekCard = document.createElement('div');
-            reszletekCard.classList.add('card', 'h-100', 'text-center', 'position-relative', 'd-flex', 'align-items-center'); // Hozzáadtuk a d-flex és align-items-center osztályokat
+            reszletekCard.classList.add('card', 'h-100', 'text-center', 'position-relative', 'd-flex', 'align-items-center');
 
             const reszletekCardBody = document.createElement('div');
-            reszletekCardBody.classList.add('card-body', 'd-flex', 'flex-column', 'justify-content-center', 'w-100'); // Hozzáadtuk a d-flex, flex-column, justify-content-center és w-100 osztályokat
+            reszletekCardBody.classList.add('card-body', 'd-flex', 'flex-column', 'justify-content-center', 'w-100');
 
             const reszletekIcon = document.createElement('i');
-            reszletekIcon.classList.add('bi', 'bi-card-text', 'fs-1', 'mb-3', 'text-warning');  
+            reszletekIcon.classList.add('bi', 'bi-card-text', 'fs-1', 'mb-3', 'text-warning');
 
             const reszletekTitle = document.createElement('h5');
             reszletekTitle.classList.add('card-title');
@@ -1211,7 +1216,8 @@ function loadMoreJobs(filteredJobs) {
 
             const reszletekText = document.createElement('p');
             reszletekText.classList.add('card-text');
-            reszletekText.textContent = 'A részletekért kattints ide...';
+            const leirasShort = job['Bevezető'].split('. ')[0] + '...'; // Az első mondat kivágása
+            reszletekText.textContent = leirasShort; // A szöveg beállítása
 
             // Magnifying Glass Icon
             const reszletekExpandButton = document.createElement('button');
@@ -1632,26 +1638,28 @@ function loadMoreJobs(filteredJobs) {
                 window.myChart.destroy();
             }
 
+            const allDatasets = [
+                ...visitorsDatasets,
+                ...applicantsDatasets,
+                {
+                    label: 'Konverziós arány (%)',
+                    data: conversionRates,
+                    type: 'line',
+                    fill: false,
+                    borderColor: '#333333',
+                    backgroundColor: '#333333',
+                    yAxisID: 'y1',
+                    tension: 0.1,
+                    pointBackgroundColor: '#333333',
+                    pointBorderColor: '#333333'
+                }
+            ];
+
             window.myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: sortedLabels,
-                    datasets: [
-                        ...visitorsDatasets,
-                        ...applicantsDatasets,
-                        {
-                            label: 'Konverziós arány (%)',
-                            data: conversionRates,
-                            type: 'line',
-                            fill: false,
-                            borderColor: '#333333',
-                            backgroundColor: '#333333',
-                            yAxisID: 'y1',
-                            tension: 0.1,
-                            pointBackgroundColor: '#333333',
-                            pointBorderColor: '#333333'
-                        }
-                    ]
+                    datasets: allDatasets
                 },
                 options: {
                     responsive: true,
@@ -1683,7 +1691,7 @@ function loadMoreJobs(filteredJobs) {
                             }
                         },
                         legend: {
-                            position: 'bottom'
+                            display: false
                         }
                     },
                     scales: {
@@ -1712,7 +1720,45 @@ function loadMoreJobs(filteredJobs) {
                     }
                 }
             });
+
+            // Generate checkboxes for legend
+            const chartLegend = document.getElementById('chartLegend');
+            chartLegend.innerHTML = '';
+
+            allDatasets.forEach((dataset, index) => {
+                const checkboxContainer = document.createElement('div');
+                checkboxContainer.classList.add('form-check', 'form-check-inline');
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `dataset-${index}`;
+                checkbox.classList.add('form-check-input');
+                checkbox.checked = true;
+                checkbox.style.backgroundColor = dataset.borderColor || dataset.backgroundColor;
+                checkbox.style.borderColor = dataset.borderColor || dataset.backgroundColor;
+
+                const label = document.createElement('label');
+                label.htmlFor = `dataset-${index}`;
+                label.classList.add('form-check-label');
+                label.style.color = '#000000';
+                label.appendChild(document.createTextNode(dataset.label));
+
+                checkboxContainer.appendChild(checkbox);
+                checkboxContainer.appendChild(label);
+                chartLegend.appendChild(checkboxContainer);
+
+                checkbox.addEventListener('change', function() {
+                    const chartDataset = window.myChart.data.datasets[index];
+                    chartDataset.hidden = !checkbox.checked;
+                    window.myChart.update();
+                });
+            });
+
+            // Áthelyezzük a chartLegend-et a grafikon alá
+            const chartContainer = document.querySelector('.chart-container');
+            chartContainer.parentNode.insertBefore(chartLegend, chartContainer.nextSibling);
         }
+
         // Utility function to shade color
         function shadeColor(color, percent) {
             let f = parseInt(color.slice(1), 16),
