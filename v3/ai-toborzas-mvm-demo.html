@@ -665,6 +665,15 @@
             margin: 1.75rem auto;
         }
     }
+            .modal-body {
+            max-height: 65vh;
+            overflow-y: auto;
+        }
+
+            #jobList {
+            max-height: 300px; /* Állítsa be a kívánt maximális magasságot */
+            overflow-y: auto;
+        }
 
     
     /* Loading animáció */
@@ -727,6 +736,23 @@
         100% { opacity: 1; }
     }
 
+    /* munkakör váltó gomb header */
+    .btn-primary.job-selector-btn {
+    background-color: #f0b323;
+    border-color: #f0b323;
+    color: #333;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary.job-selector-btn:hover,
+  .btn-primary.job-selector-btn:focus {
+    background-color: #d9a31f;
+    border-color: #d9a31f;
+    color: #333;
+  }
+
+
 </style>
 </head>
 <body>
@@ -757,9 +783,9 @@
                 </li>
             </ul>
             <!-- Job Selector Button -->
-            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#jobSelectorModal">
-                Állás kiválasztása
-            </button>
+            <button class="btn btn-primary job-selector-btn" type="button" data-bs-toggle="modal" data-bs-target="#jobSelectorModal">
+                <i class="bi bi-arrow-down-up"></i> Állás kiválasztása
+              </button>
         </div>
     </div>
 </nav>
@@ -872,17 +898,16 @@
 
 
 <div class="modal fade" id="jobSelectorModal" tabindex="-1" aria-labelledby="jobSelectorModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header justify-content-center">
                 <img src="https://mvm.karrierportal.hu/media/picture/mvm/og-img.jpg" alt="MVM logó" style="height: 100px; margin: 15px 0;">
             </div>
             <div class="modal-body">
-                <!-- Kereső mező hozzáadása -->
                 <div class="mb-3">
                     <input type="text" class="form-control" id="jobSearch" placeholder="Keresés munkakörök között...">
                 </div>
-                <ul class="list-group" id="jobList">
+                <ul class="list-group" id="jobList" style="max-height: 300px; overflow-y: auto;">
                     <!-- A munkakörök listája ide kerül -->
                 </ul>
             </div>
@@ -976,97 +1001,96 @@
             document.querySelector('.btn[data-bs-target="#jobSelectorModal"]').addEventListener('click', () => {
                 jobSelectorModal.show();
             });
+
+            // Keresőmező eseménykezelő hozzáadása
+            const searchInput = document.getElementById('jobSearch');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    populateJobList(e.target.value);
+                });
+            }
         }
 
     // Munkakörök Listájának Feltöltése a Modalba
     function populateJobList(searchTerm = '') {
-            const jobList = document.getElementById('jobList');
-            if (!jobList) {
-                console.error('Element with id "jobList" not found.');
-                return;
-            }
-            jobList.innerHTML = '';
-
-            const filteredJobs = jobs.filter(job => 
-                job['Pozíció neve'].toLowerCase().includes(searchTerm.toLowerCase())
-            );
-
-            // Csak az első 5 találatot jelenítjük meg
-            const displayedJobs = filteredJobs.slice(0, 5);
-
-            displayedJobs.forEach((job, index) => {
-                const listItem = document.createElement('li');
-                listItem.classList.add('list-group-item', 'list-group-item-action');
-                listItem.textContent = job['Pozíció neve'];
-                listItem.style.cursor = 'pointer';
-                listItem.addEventListener('click', () => {
-                    currentJob = job;
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('jobSelectorModal'));
-                    modal.hide();
-                    
-                    // Oldal tetejére ugrás
-                    window.scrollTo(0, 0);
-                    
-                    // Töltő animáció megjelenítése
-                    document.getElementById('loaderContainer').style.display = 'flex';
-                    
-                    // Késleltetés hozzáadása az adatok betöltéséhez
-                    setTimeout(() => {
-                        displayJobDetails(job);
-                        displayImageGallery(job);
-                        displayTextContent(job);
-                        displayAnalysis(job);
-                        
-                        // Töltő animáció elrejtése
-                        document.getElementById('loaderContainer').style.display = 'none';
-                    }, 1000); // 1 másodperces késleltetés
-                });
-                jobList.appendChild(listItem);
-            });
-
-            // "Több" gomb hozzáadása, ha van több találat
-            if (filteredJobs.length > 5) {
-                const moreButton = document.createElement('li');
-                moreButton.classList.add('list-group-item', 'text-center', 'more-button');
-                moreButton.textContent = 'Több...';
-                moreButton.style.cursor = 'pointer';
-                moreButton.addEventListener('click', () => loadMoreJobs(filteredJobs, 5));
-                jobList.appendChild(moreButton);
-            }
-        }
-    // Több munkakör betöltése
-    function loadMoreJobs(filteredJobs, startIndex) {
-        const jobList = document.getElementById('jobList');
-        const moreButton = jobList.querySelector('.more-button');
-        if (moreButton) {
-            moreButton.remove();
-        }
-
-        const nextJobs = filteredJobs.slice(startIndex, startIndex + 5);
-        nextJobs.forEach((job) => {
-            const listItem = document.createElement('li');
-            listItem.classList.add('list-group-item', 'list-group-item-action');
-            listItem.textContent = job['Pozíció neve'];
-            listItem.style.cursor = 'pointer';
-            listItem.addEventListener('click', () => {
-                currentJob = job;
-                displayJobDetails(job);
-                const modal = bootstrap.Modal.getInstance(document.getElementById('jobSelectorModal'));
-                modal.hide();
-            });
-            jobList.appendChild(listItem);
-        });
-
-        // Új "Több" gomb hozzáadása, ha van még több találat
-        if (startIndex + 5 < filteredJobs.length) {
-            const newMoreButton = document.createElement('li');
-            newMoreButton.classList.add('list-group-item', 'text-center', 'more-button');
-            newMoreButton.textContent = 'Több...';
-            newMoreButton.style.cursor = 'pointer';
-            newMoreButton.addEventListener('click', () => loadMoreJobs(filteredJobs, startIndex + 5));
-            jobList.appendChild(newMoreButton);
-        }
+    const jobList = document.getElementById('jobList');
+    if (!jobList) {
+        console.error('Element with id "jobList" not found.');
+        return;
     }
+    jobList.innerHTML = '';
+
+    const filteredJobs = jobs.filter(job => 
+        job['Pozíció neve'].toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // Csak az első 5 találatot jelenítjük meg
+    const displayedJobs = filteredJobs.slice(0, 5);
+
+    displayedJobs.forEach((job) => {
+        const listItem = document.createElement('li');
+        listItem.classList.add('list-group-item', 'list-group-item-action');
+        listItem.textContent = job['Pozíció neve'];
+        listItem.style.cursor = 'pointer';
+        listItem.addEventListener('click', () => {
+            currentJob = job;
+            const modal = bootstrap.Modal.getInstance(document.getElementById('jobSelectorModal'));
+            modal.hide();
+                
+            // Oldal tetejére ugrás
+            window.scrollTo(0, 0);
+                
+            // Töltő animáció megjelenítése
+            document.getElementById('loaderContainer').style.display = 'flex';
+                
+            // Késleltetés hozzáadása az adatok betöltéséhez
+            setTimeout(() => {
+                displayJobDetails(job);
+                displayImageGallery(job);
+                displayTextContent(job);
+                displayAnalysis(job);
+                    
+                // Töltő animáció elrejtése
+                document.getElementById('loaderContainer').style.display = 'none';
+            }, 1000); // 1 másodperces késleltetés
+        });
+        jobList.appendChild(listItem);
+    });
+
+    // "Több" gomb hozzáadása, ha van több találat
+    if (filteredJobs.length > 5) {
+        const moreButton = document.createElement('li');
+        moreButton.classList.add('list-group-item', 'text-center', 'more-button');
+        moreButton.textContent = 'Több...';
+        moreButton.style.cursor = 'pointer';
+        moreButton.addEventListener('click', () => loadMoreJobs(filteredJobs));
+        jobList.appendChild(moreButton);
+    }
+}
+
+function loadMoreJobs(filteredJobs) {
+    const jobList = document.getElementById('jobList');
+    const moreButton = jobList.querySelector('.more-button');
+    if (moreButton) {
+        moreButton.remove();
+    }
+
+    // Betöltjük az összes fennmaradó elemet
+    const remainingJobs = filteredJobs.slice(jobList.children.length);
+    remainingJobs.forEach((job) => {
+        const listItem = document.createElement('li');
+        listItem.classList.add('list-group-item', 'list-group-item-action');
+        listItem.textContent = job['Pozíció neve'];
+        listItem.style.cursor = 'pointer';
+        listItem.addEventListener('click', () => {
+            currentJob = job;
+            displayJobDetails(job);
+            const modal = bootstrap.Modal.getInstance(document.getElementById('jobSelectorModal'));
+            modal.hide();
+        });
+        jobList.appendChild(listItem);
+    });
+}
 
         // Display Job Details
         const jobDetails = document.getElementById('jobDetails');
